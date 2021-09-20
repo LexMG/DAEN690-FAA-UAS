@@ -1,0 +1,67 @@
+---
+title: "Incidents - Exploratory Analysis"
+author: "Lex Gourley"
+date: "9/19/2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+require(data.table)
+require(ggplot2)
+require(MASS)
+require(tidyverse)
+require(chron)
+```
+
+## Read the data look at quick summary stats.
+```{r import}
+file <- "incidents.csv"
+df <- read.csv(file,header = TRUE, stringsAsFactors = FALSE, na.strings=c("NA","N/A","","na","Na","n/a","N/a","NaN","nA"))
+setDT(df)
+df
+
+# Dimension of data set
+dim(df)
+# Names of fields
+names(df)
+# Structure of fields
+str(df)
+# Summary of fields
+summary(df)
+```
+
+## Check for null values and duplicates
+```{r nulls}
+# Count number of nulls in each field
+sapply(df, function(x) sum(is.na(x)))
+
+# Count number of unique values in each field
+sapply(df, function (x) length(unique(x)))
+
+# Count number of duplicates. The other columns shouldn't matter if there are duplicates.
+n_dup_date <- data.frame(table(df$DATE))
+n_dup_date <- n_dup_date[n_dup_date$Freq >1,]
+sum(n_dup_date$Freq) - nrow(n_dup_date)
+
+n_dup_remarks <- data.frame(table(df$REMARKS))
+n_dup_remarks <- n_dup_remarks[n_dup_remarks$Freq >1,]
+sum(n_dup_remarks$Freq) - nrow(n_dup_remarks)
+
+n_dup_cedar <- data.frame(table(df$CEDAR.REMARKS))
+n_dup_cedar <- n_dup_cedar[n_dup_cedar$Freq >1,]
+sum(n_dup_cedar$Freq) - nrow(n_dup_cedar)
+```
+
+## Adjust date column to be readable as date/time
+```{r date}
+dt <- df$DATE
+dtparts <- t(as.data.frame(strsplit(dt,"T")))
+dtparts[,2] <- substr(dtparts[,2],1,5)
+dateonly <- dtparts[,1]
+timeonly <- dtparts[,2]
+
+df_2 <- cbind(df,dateonly)
+df_2 <- cbind(df_2,timeonly)
+df_2$dateonly <- as.Date(df_2$dateonly)
+str(df_2)
+```
