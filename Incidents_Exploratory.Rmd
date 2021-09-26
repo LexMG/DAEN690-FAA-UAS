@@ -10,12 +10,14 @@ require(data.table)
 require(ggplot2)
 require(MASS)
 require(tidyverse)
+require(janitor)
 require(chron)
 ```
 
 ## Read the data look at quick summary stats.
 ```{r import}
-file <- "incidents.csv"
+
+file <- "Incidents_Original_Adjusted.csv"
 df <- read.csv(file,header = TRUE, stringsAsFactors = FALSE, na.strings=c("NA","N/A","","na","Na","n/a","N/a","NaN","nA"))
 setDT(df)
 df
@@ -29,41 +31,127 @@ str(df)
 # Summary of fields
 summary(df)
 ```
+## Split up CEDAR Remarks
+```{r cedar}
+df_2 <- separate(data=df, col=CEDAR.REMARKS, into=c("EVENTTYPE.CEDAR","STATUS.CEDAR","MORID.CEDAR","FACILITY.CEDAR","EVENTDATE.CEDAR","UTCTIME.CEDAR","UTCTIME24.CEDAR","CALENDARDATE.CEDAR","NEARESTAIRPORT.CEDAR","METAR.CEDAR","POTENTIALLYSIGNIFICANT.CEDAR","CALLSIGN.CEDAR","ACTYPE.CEDAR","IFRIVR.CEDAR","AUTHCERT.CEDAR","AIRSPACECLASS.CEDAR","ACLOCATION.CEDAR","ACALTITUDE.CEDAR","ACHEADING.CEDAR","RELATIVECLOCKPOSITION.CEDAR","UASREGISTRATIONNUM.CEDAR","UASLONG.CEDAR","UASLAT.CEDAR","UASTYPE.CEDAR","UASFORMATION.CEDAR","CLOSESTPROXIMITY.CEDAR","UASWEIGHTGT55.CEDAR","UASDIM.CEDAR","UASFWROTOR.CEDAR","UASACTIVITYRISK.CEDAR","UASCOLOR.CEDAR","PILOTREPORTEDNMAC.CEDAR","TCASRA.CEDAR","LEOCONTACT.CEDAR","SUMMARY.CEDAR","QAFINDINGS.CEDAR"),sep="; ")
+
+
+
+df_2$EVENTTYPE.CEDAR <- gsub("CEDAR – Event Type: ","",df_2$EVENTTYPE.CEDAR)
+df_2$STATUS.CEDAR <- gsub("Status: ","",df_2$STATUS.CEDAR)
+df_2$MORID.CEDAR <- gsub("MOR ID: ","",df_2$MORID.CEDAR)
+df_2$FACILITY.CEDAR <- gsub("Facility: ","",df_2$FACILITY.CEDAR)
+df_2$EVENTDATE.CEDAR <- gsub("Event Date: ","",df_2$EVENTDATE.CEDAR)
+df_2$UTCTIME.CEDAR <- gsub("UTC Time: ","",df_2$UTCTIME.CEDAR)
+df_2$UTCTIME24.CEDAR <- gsub("UTC Time 24 HR Format: ","",df_2$UTCTIME24.CEDAR)
+df_2$CALENDARDATE.CEDAR <- gsub("Calendar Date: ","",df_2$CALENDARDATE.CEDAR)
+df_2$NEARESTAIRPORT.CEDAR <- gsub("Nearest Airport: ","",df_2$NEARESTAIRPORT.CEDAR)
+df_2$METAR.CEDAR <- gsub("METAR: ","",df_2$METAR.CEDAR)
+df_2$POTENTIALLYSIGNIFICANT.CEDAR <- gsub("Potentially Significant: ","",df_2$POTENTIALLYSIGNIFICANT.CEDAR)
+df_2$CALLSIGN.CEDAR <- gsub("Callsign: ","",df_2$CALLSIGN.CEDAR)
+df_2$ACTYPE.CEDAR <- gsub("A/C Type: ","",df_2$ACTYPE.CEDAR)
+df_2$IFRIVR.CEDAR <- gsub("IFR / IVR: ","",df_2$IFRIVR.CEDAR)
+df_2$AUTHCERT.CEDAR <- gsub("Certificate of Authorization: ","",df_2$AUTHCERT.CEDAR)
+df_2$AIRSPACECLASS.CEDAR <- gsub("Airspace Class: ","",df_2$AIRSPACECLASS.CEDAR)
+df_2$ACLOCATION.CEDAR <- gsub("A/C Location F/R/D: ","",df_2$ACLOCATION.CEDAR)
+df_2$ACALTITUDE.CEDAR <- gsub("A/C Altitude: ","",df_2$ACALTITUDE.CEDAR)
+df_2$ACHEADING.CEDAR <- gsub("A/C Heading: ","",df_2$ACHEADING.CEDAR)
+df_2$RELATIVECLOCKPOSITION.CEDAR <- gsub("Relative Clock Position: ","",df_2$RELATIVECLOCKPOSITION.CEDAR)
+df_2$UASREGISTRATIONNUM.CEDAR <- gsub("UAS Registration #: ","",df_2$UASREGISTRATIONNUM.CEDAR)
+df_2$UASLONG.CEDAR <- gsub("UAS Longitude: ","",df_2$UASLONG.CEDAR)
+df_2$UASLAT.CEDAR <- gsub("UAS Latitude: ","",df_2$UASLAT.CEDAR)
+df_2$UASTYPE.CEDAR <- gsub("UAS Type: ","",df_2$UASTYPE.CEDAR)
+df_2$UASFORMATION.CEDAR <- gsub("UAS Formation: ","",df_2$UASFORMATION.CEDAR)
+df_2$CLOSESTPROXIMITY.CEDAR <- gsub("Closest Proximity (feet): ","",df_2$CLOSESTPROXIMITY.CEDAR)
+df_2$UASWEIGHTGT55.CEDAR <- gsub("UAS Weight Exceeds 55lbs: ","",df_2$UASWEIGHTGT55.CEDAR)
+df_2$UASDIM.CEDAR <- gsub("UAS Dimensions (feet): ","",df_2$UASDIM.CEDAR)
+df_2$UASFWROTOR.CEDAR <- gsub("UAS Fixed Wing/Rotorcraft: ","",df_2$UASFWROTOR.CEDAR)
+df_2$UASACTIVITYRISK.CEDAR <- gsub("UAS Activity Risk: ","",df_2$UASACTIVITYRISK.CEDAR)
+df_2$UASCOLOR.CEDAR <- gsub("UAS Color: ","",df_2$UASCOLOR.CEDAR)
+df_2$PILOTREPORTEDNMAC.CEDAR <- gsub("Pilot Reported as NMAC: ","",df_2$PILOTREPORTEDNMAC.CEDAR)
+df_2$TCASRA.CEDAR <- gsub("TCAS RA: ","",df_2$TCASRA.CEDAR)
+df_2$LEOCONTACT.CEDAR <- gsub("Law Enforcement Contact Info: ","",df_2$LEOCONTACT.CEDAR)
+df_2$SUMMARY.CEDAR <- gsub("Summary: ","",df_2$SUMMARY.CEDAR)
+df_2$QAFINDINGS.CEDAR <- gsub("QA Findings: ","",df_2$QAFINDINGS.CEDAR)
+```
 
 ## Check for null values and duplicates
 ```{r nulls}
 # Count number of nulls in each field
-sapply(df, function(x) sum(is.na(x)))
+sapply(df_2, function(x) sum(is.na(x)))
 
 # Count number of unique values in each field
-sapply(df, function (x) length(unique(x)))
+sapply(df_2, function (x) length(unique(x)))
 
 # Count number of duplicates. The other columns shouldn't matter if there are duplicates.
-n_dup_date <- data.frame(table(df$DATE))
+n_dup_date <- data.frame(table(df_2$DATE))
 n_dup_date <- n_dup_date[n_dup_date$Freq >1,]
 sum(n_dup_date$Freq) - nrow(n_dup_date)
 
-n_dup_remarks <- data.frame(table(df$REMARKS))
+n_dup_remarks <- data.frame(table(df_2$REMARKS))
 n_dup_remarks <- n_dup_remarks[n_dup_remarks$Freq >1,]
 sum(n_dup_remarks$Freq) - nrow(n_dup_remarks)
+```
+## General Cleaning
+```{r nulls_2}
+# removal of columns that are completely empty
+df_2 <- df_2[,c("IMPACTEDFACILITY","OPLVL"):=NULL]
 
-n_dup_cedar <- data.frame(table(df$CEDAR.REMARKS))
-n_dup_cedar <- n_dup_cedar[n_dup_cedar$Freq >1,]
-sum(n_dup_cedar$Freq) - nrow(n_dup_cedar)
+# removal of unnecessary columns
+df_2 <- df_2[,c("CALLSIGN","ACTYPE","ORIGIN","DEST","DESTNEW"):=NULL]
+df_2 <- df_2[,c("EVENTTYPE.CEDAR","STATUS.CEDAR","MORID.CEDAR","EVENTDATE.CEDAR","UTCTIME.CEDAR","CALLSIGN.CEDAR","ACTYPE.CEDAR","UASTYPE.CEDAR","UASACTIVITYRISK.CEDAR","UASCOLOR.CEDAR","LEOCONTACT.CEDAR"):=NULL]
+
+# fill in null rows in SECONDARYCODES temporarily
+df_2$SECONDARYCODES[is.na(df_2$SECONDARYCODES)] <- "N/A"
+
+# removal of rows with codes unnecessary to project
+df_2 <- df_2[!grepl("ADMIN",df_2$PRIMARYCODE)]
+df_2 <- df_2[!grepl("AIRCRAFT ACCIDENT",df_2$PRIMARYCODE)]
+df_2 <- df_2[!grepl("AIRPORT",df_2$PRIMARYCODE)]
+df_2 <- df_2[!grepl("ATC FACILITY",df_2$PRIMARYCODE)]
+df_2 <- df_2[!grepl("C-UAS",df_2$PRIMARYCODE)]
+df_2 <- df_2[!grepl("DISTURB",df_2$PRIMARYCODE)]
+df_2 <- df_2[!grepl("EQUIPMENT",df_2$PRIMARYCODE)]
+df_2 <- df_2[!grepl("HORNET",df_2$PRIMARYCODE)]
+df_2 <- df_2[!grepl("NORDO",df_2$PRIMARYCODE)]
+df_2 <- df_2[!grepl("VIP",df_2$PRIMARYCODE)]
+df_2 <- df_2[!grepl("WAIVER",df_2$PRIMARYCODE)]
+df_2 <- df_2[!grepl("WASP",df_2$PRIMARYCODE)]
+
+df_2 <- df_2[!grepl("WAIVER",df_2$SECONDARYCODES)]
+df_2 <- df_2[!(df_2$SECONDARYCODES=="AIRPORT")]
+df_2 <- df_2[!(df_2$SECONDARYCODES=="ATC FACILITY")]
+df_2 <- df_2[!grepl("C-UAS",df_2$SECONDARYCODES)]
+
+# standardize ACFT vs Aircraft
+df_2$REMARKS <- gsub("ACFT","Aircraft",df_2$REMARKS)
+
+df_2$SECONDARYCODES[df_2$SECONDARYCODES == "N/A"] <- NA
 ```
 
 ## Adjust date column to be readable as date/time
 ```{r date}
-dt <- df$DATE
+dt <- df_2$DATE
 dtparts <- t(as.data.frame(strsplit(dt,"T")))
 dtparts[,2] <- substr(dtparts[,2],1,5)
 dateonly <- dtparts[,1]
 timeonly <- dtparts[,2]
 
-df_2 <- cbind(df,dateonly)
-df_2 <- cbind(df_2,timeonly)
-df_2$dateonly <- as.Date(df_2$dateonly)
-str(df_2)
+df_3 <- cbind(timeonly,df_2)
+df_3 <- cbind(dateonly,df_3)
+df_3$dateonly <- as.Date(df_3$dateonly)
+str(df_3)
+```
+## Find standard format remarks
+```{r standard}
+df_stob <- df_3[grepl("Aircraft observed a",df_3$REMARKS)]
+df_stre <- df_3[grepl("Aircraft reported a",df_3$REMARKS)]
 
-#this is a test
+df_4 <- rbind(df_stob,df_stre)
+```
+
+## Write to CSV
+```{r print}
+write.csv(df_3,"C:\\Users\\maygo\\OneDrive\\Documents\\DAEN690-FAA-UAS\\Incidents_Cleaned.csv",row.names=FALSE)
+write.csv(df_4,"C:\\Users\\maygo\\OneDrive\\Documents\\DAEN690-FAA-UAS\\Incidents_Cleaned_Standard.csv",row.names=FALSE)
 ```
