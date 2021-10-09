@@ -12,6 +12,9 @@ require(MASS)
 require(tidyverse)
 require(janitor)
 require(chron)
+require(stringr)
+require(tm)
+require(qdap)
 ```
 
 ## Read the data look at quick summary stats.
@@ -95,11 +98,11 @@ sum(n_dup_remarks$Freq) - nrow(n_dup_remarks)
 ## General Cleaning
 ```{r nulls_2}
 # removal of columns that are completely empty
-df_2 <- df_2[,c("IMPACTEDFACILITY","OPLVL"):=NULL]
+df_2 <- df_2[,c("IMPACTEDFACILITY","OPLVL","UASTYPE.CEDAR","UASACTIVITYRISK.CEDAR","LEOCONTACT.CEDAR"):=NULL]
 
 # removal of unnecessary columns
-df_2 <- df_2[,c("CALLSIGN","ACTYPE","ORIGIN","DEST","DESTNEW"):=NULL]
-df_2 <- df_2[,c("EVENTTYPE.CEDAR","STATUS.CEDAR","MORID.CEDAR","EVENTDATE.CEDAR","UTCTIME.CEDAR","CALLSIGN.CEDAR","ACTYPE.CEDAR","UASTYPE.CEDAR","UASACTIVITYRISK.CEDAR","UASCOLOR.CEDAR","LEOCONTACT.CEDAR"):=NULL]
+df_2 <- df_2[,c("ACTYPE","ORIGIN","DEST","DESTNEW"):=NULL]
+df_2 <- df_2[,c("EVENTTYPE.CEDAR","STATUS.CEDAR","EVENTDATE.CEDAR","METAR.CEDAR","POTENTIALLYSIGNIFICANT.CEDAR","CALLSIGN.CEDAR","ACTYPE.CEDAR","IFRVFR.CEDAR","AUTHCERT.CEDAR","UASREGISTRATIONNUM.CEDAR","UASFORMATION.CEDAR","CLOSESTPROXIMITY.CEDAR","UASWEIGHTGT55.CEDAR","UASDIM.CEDAR","UASFWROTOR.CEDAR","UASCOLOR.CEDAR","PILOTREPORTEDNMAC.CEDAR","TCASRA.CEDAR"):=NULL]
 
 # fill in null rows in SECONDARYCODES temporarily
 df_2$SECONDARYCODES[is.na(df_2$SECONDARYCODES)] <- "N/A"
@@ -148,10 +151,37 @@ df_stob <- df_3[grepl("Aircraft observed a",df_3$REMARKS)]
 df_stre <- df_3[grepl("Aircraft reported a",df_3$REMARKS)]
 
 df_4 <- rbind(df_stob,df_stre)
+
+# group the non-standard format ones together
+df_nstob <- df_3[!grepl("Aircraft observed a",df_3$REMARKS)]
+df_nstre <- df_nstob[!grepl("Aircraft reported a",df_nstob$REMARKS)]
+df_5 <- df_nstre
 ```
 
 ## Write to CSV
 ```{r print}
 write.csv(df_3,"C:\\Users\\maygo\\OneDrive\\Documents\\DAEN690-FAA-UAS\\Incidents_Cleaned.csv",row.names=FALSE)
 write.csv(df_4,"C:\\Users\\maygo\\OneDrive\\Documents\\DAEN690-FAA-UAS\\Incidents_Cleaned_Standard.csv",row.names=FALSE)
+write.csv(df_5,"C:\\Users\\maygo\\OneDrive\\Documents\\DAEN690-FAA-UAS\\Incidents_Cleaned_NonStandard.csv",row.names=FALSE)
+```
+
+## Determining if CEDAR is useful for this analysis
+```{r regex}
+
+# take the rows that have CEDAR remarks
+df_cedar <- na.omit(df_3, "SUMMARY.CEDAR")
+
+#find REMARKS that follow standard format
+nm_stand <- str_extract(df_cedar$REMARKS,'[0-9]*\\-*\\/*[0-9]*\\.*[0-9]\\.*[0-9]*(\\s*(nm|NM|miles|MILES)\\s*)(NORTH|SOUTH|EAST|WEST|(N|n)orth|(S|s)outh|(E|e)ast|(W|w)est|N|S|E|W|n|s|e|w|NW|NE|SW|SE|nw|ne|sw|se|SSE|SSW|SNE|SNW|NNE|NSE|NNE|NNW|WSW|WNW|WSE|WNE|ENE|ESE|ESW|ENW|sse|ssw|sne|snw|nne|nnw|wsw|wnw|wse|wne|ene|ese|esw|enw)*(\\s*(of|OF)\\s*[A-Z]{1,4}[0-9]{0,2})?')
+nm_stand
+
+# Cedar Records that give us NM
+nm_cedar1 <- str_extract(df_cedar$SUMMARY.CEDAR,'[0-9]*\\-*\\/*[0-9]*\\.*[0-9]\\.*[0-9]*(\\s*(nm|NM|miles|MILES)\\s*)(NORTH|SOUTH|EAST|WEST|north|south|east|west|N|S|E|W|n|s|e|w|NW|NE|SW|SE|nw|ne|sw|se|SSE|SSW|SNE|SNW|NNE|NSE|NNE|NNW|WSW|WNW|WSE|WNE|ENE|ESE|ESW|ENW|sse|ssw|sne|snw|nne|nnw|wsw|wnw|wse|wne|ene|ese|esw|enw)*(\\s*(of|OF)\\s*[A-Z]{1,4}[0-9]{0,2})?')
+
+df_cedar_output <- cbind(df_cedar$REMARKS,nm_stand,df_cedar$SUMMARY.CEDAR,nm_cedar1,df_cedar$UASLAT.CEDAR,df_cedar$UASLONG.CEDAR)
+write.csv(df_cedar_output,"C:\\Users\\maygo\\OneDrive\\Documents\\DAEN690-FAA-UAS\\CEDAR_Output.csv",row.names=FALSE)
+
+nm_cedar2 <- str_extract(df_cedar$SUMMARY.CEDAR,'[0-9]*\\-*[0-9]*\\.*[0-9]\\.*[0-9]*(\\s*(miles|MILES)+\\s*)(NORTH|SOUTH|EAST|WEST|north|(S|s)outh|east|west|N|S|E|W|NW|NE|SW|SE|SSE|SSW|SNE|SNW|NNE|NSE|NNE|NNW|WSW|WNW|WSE|WNE|ENE|ESE|ESW|ENW)*(\\s*(of|OF)\\s*[A-Z]{3,})?')
+nm_cedar2
+
 ```
