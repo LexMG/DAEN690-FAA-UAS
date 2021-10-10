@@ -382,7 +382,7 @@ std_vor <- std[grep(paste(pattern,collapse="|"),std$REMARKS)] #3 (DIVE DEEPER)
   std_completed <- std_vor #3
   
 ##---->       GRACE INCIDENTS with VOR DATASET##
-    write.csv(std_vor,"C:\\Users\\maygo\\OneDrive\\Documents\\DAEN690-FAA-UAS\\6.3-Grace_Incidents_VOR.csv",row.names=FALSE) #14 #DONE  
+    write.csv(std_vor,"C:\\Users\\maygo\\OneDrive\\Documents\\DAEN690-FAA-UAS\\6.3-MissingStandard_Incidents_VOR.csv",row.names=FALSE) #14 #DONE  
   
 std <- std[!grep(paste(pattern,collapse="|"),std$REMARKS)]    #27 (DIVE DEEPER {RWY AND REGULAR})
   # Extract all locations marked RWY (to use RUNWAY dataset)
@@ -405,7 +405,7 @@ std <- std[!grep(paste(pattern,collapse="|"),std$REMARKS)]    #27 (DIVE DEEPER {
       std_completed <- rbind(std_completed,std2_rwy, fill=TRUE) #17
       
 ##---->       GRACE INCIDENTS with RUNWAYS DATASET##
-    write.csv(std2_rwy,"C:\\Users\\maygo\\OneDrive\\Documents\\DAEN690-FAA-UAS\\6.2-Grace_Incidents_RWY.csv",row.names=FALSE) #14 #DONE
+    write.csv(std2_rwy,"C:\\Users\\maygo\\OneDrive\\Documents\\DAEN690-FAA-UAS\\6.2-MissingStandard_Incidents_RWY.csv",row.names=FALSE) #14 #DONE
   
   # Extract all other locations 
   std <- std[!grepl("RWY",std$REMARKS)] #13
@@ -436,7 +436,7 @@ std <- std[!grep(paste(pattern,collapse="|"),std$REMARKS)]    #27 (DIVE DEEPER {
       std_completed <- rbind(std_completed,std3, fill=TRUE) #28
     
 ##---->       GRACE INCIDENTS with FULL FORMAT DATASET##
-        write.csv(std3,"C:\\Users\\maygo\\OneDrive\\Documents\\DAEN690-FAA-UAS\\6.1-Grace_Incidents_AIRPORT_FULLFORMAT.csv",row.names=FALSE) #11 #DONE
+        write.csv(std3,"C:\\Users\\maygo\\OneDrive\\Documents\\DAEN690-FAA-UAS\\6.1-MissingStandard_Incidents_AIRPORT_FULLFORMAT.csv",row.names=FALSE) #11 #DONE
       std_waypoint <- std2[grep(paste(pattern,collapse="|"),std2$REMARKS)] #2
       std_waypoint$waypoint_lat <- c("41° 57' 19.140\" N","37° 33' 02.960\" N")
       std_waypoint$waypoint_long <- c("86° 55' 34.70\" W","121° 37' 28.510\" W")
@@ -444,11 +444,11 @@ std <- std[!grep(paste(pattern,collapse="|"),std$REMARKS)]    #27 (DIVE DEEPER {
       std_completed <- rbind(std_completed,std_waypoint, fill=TRUE) #30
     
 ##---->       GRACE INCIDENTS with WAYPOINTS DATASET##
-      write.csv(std_waypoint,"C:\\Users\\maygo\\OneDrive\\Documents\\DAEN690-FAA-UAS\\6.4-Grace_Incidents_AIRPORT_WAYPOINTS.csv",row.names=FALSE) #2 DONE
+      write.csv(std_waypoint,"C:\\Users\\maygo\\OneDrive\\Documents\\DAEN690-FAA-UAS\\6.4-MissingStandard_Incidents_AIRPORT_WAYPOINTS.csv",row.names=FALSE) #2 DONE
       
 std_completed <- arrange(std_completed,DATE)
 #Remove Duplicates (same sighting/different callsign or time)
 std_completed <- distinct(std_completed,dateonly,UASLOCATION,.keep_all=TRUE) #68
-  write.csv(std_completed,"C:\\Users\\maygo\\OneDrive\\Documents\\DAEN690-FAA-UAS\\06-Grace_Incidents_AIRPORT.csv",row.names=FALSE) #30 #DONE    
+  write.csv(std_completed,"C:\\Users\\maygo\\OneDrive\\Documents\\DAEN690-FAA-UAS\\06-MissingStandard_Incidents_AIRPORT.csv",row.names=FALSE) #30 #DONE    
 
 ```
