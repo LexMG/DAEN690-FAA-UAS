@@ -711,7 +711,26 @@ df_2 &lt;- df_2[!grepl(&quot;C-UAS&quot;,df_2$SECONDARYCODES)]
 # standardize ACFT vs Aircraft
 df_2$REMARKS &lt;- gsub(&quot;ACFT&quot;,&quot;Aircraft&quot;,df_2$REMARKS)
 
-df_2$SECONDARYCODES[df_2$SECONDARYCODES == &quot;N/A&quot;] &lt;- NA</code></pre>
+df_2$SECONDARYCODES[df_2$SECONDARYCODES == &quot;N/A&quot;] &lt;- NA
+
+# remove pii
+df_2$REMARKS &lt;- gsub(&quot;(\\+\\d{1,2}\\s?)?1?\\-?\\.?\\s?\\(?\\d{3}\\)?[\\s.-]?\\d{3}[\\s.-]?\\d{4}&quot;,&quot;&quot;,df_2$REMARKS)
+
+df_2$REMARKS &lt;- gsub(&quot;(NM)([A-Z]{1,3})&quot;,&quot;\\1 \\2&quot;,df_2$REMARKS)
+df_2$REMARKS &lt;- gsub(&quot;([0-9]*\\-*\\/*[0-9]*\\.*[0-9]\\.*[0-9]*)(NM)&quot;,&quot;\\1 \\2&quot;,df_2$REMARKS)
+df_2$REMARKS &lt;- gsub(&quot;(of)([A-Z]{3,4})&quot;,&quot;\\1 \\2&quot;,df_2$REMARKS)
+df_2$REMARKS &lt;- gsub(&quot;([A-Z]{1,3})(of)&quot;,&quot;\\1 \\2&quot;,df_2$REMARKS)
+df_2$REMARKS &lt;- gsub(&quot;([A-Z]{1,3})(\\s[A-Z]{3,4}$)&quot;,&quot;\\1 of\\2&quot;,df_2$REMARKS)
+df_2$REMARKS &lt;- gsub(&quot;(RWY)([0-9]{1,2}[L|R|C]?)&quot;,&quot;\\1 \\2&quot;,df_2$REMARKS)
+df_2$REMARKS &lt;- gsub(&quot;(RWY\\s)(\\d(?!\\d))&quot;,&quot;\\10\\2&quot;,df_2$REMARKS,perl=T)
+df_2$REMARKS &lt;- gsub(&quot;south&quot;,&quot;S&quot;,df_2$REMARKS)
+df_2$REMARKS &lt;- gsub(&quot;east&quot;,&quot;E&quot;,df_2$REMARKS)
+df_2$REMARKS &lt;- gsub(&quot;north&quot;,&quot;N&quot;,df_2$REMARKS)
+df_2$REMARKS &lt;- gsub(&quot;west&quot;,&quot;W&quot;,df_2$REMARKS)
+df_2$REMARKS &lt;- gsub(&quot;South&quot;,&quot;S&quot;,df_2$REMARKS)
+df_2$REMARKS &lt;- gsub(&quot;East&quot;,&quot;E&quot;,df_2$REMARKS)
+df_2$REMARKS &lt;- gsub(&quot;North&quot;,&quot;N&quot;,df_2$REMARKS)
+df_2$REMARKS &lt;- gsub(&quot;West&quot;,&quot;W&quot;,df_2$REMARKS)</code></pre>
 </div>
 <div id="adjust-date-column-to-be-readable-as-datetime" class="section level2">
 <h2>Adjust date column to be readable as date/time</h2>
@@ -734,7 +753,7 @@ str(df_3)</code></pre>
 ##  $ PRIMARYCODE                : chr  &quot;UAS&quot; &quot;UAS&quot; &quot;UAS&quot; &quot;UAS&quot; ...
 ##  $ SECONDARYCODES             : chr  NA NA NA NA ...
 ##  $ REPORTINGFACILITY          : chr  &quot;ZNY&quot; &quot;CLE&quot; &quot;SLC&quot; &quot;SLC&quot; ...
-##  $ REMARKS                    : chr  &quot;Aircraft reported a UAS off the left side, 3 NM NE of CRI VOR while southbound at 2,000 feet. No evasive action&quot;| __truncated__ &quot;Aircraft observed alarge orange UAS with flashing lights 1 NM off the right side and400 feet below while at 1,0&quot;| __truncated__ &quot;Aircraft observed a UAS while at 5,000 feet 11 NM SSE of SLC. No evasive action was taken.&quot; &quot;Aircraft observed a UAS while at 5,000 feet 11 NM SSE of SLC. No evasive action was taken.&quot; ...
+##  $ REMARKS                    : chr  &quot;Aircraft reported a UAS off the left side, 3 NM NE of CRI VOR while Sbound at 2,000 feet. No evasive action tak&quot;| __truncated__ &quot;Aircraft observed alarge orange UAS with flashing lights 1 NM off the right side and400 feet below while at 1,0&quot;| __truncated__ &quot;Aircraft observed a UAS while at 5,000 feet 11 NM SSE of SLC. No evasive action was taken.&quot; &quot;Aircraft observed a UAS while at 5,000 feet 11 NM SSE of SLC. No evasive action was taken.&quot; ...
 ##  $ MORID.CEDAR                : chr  NA NA NA NA ...
 ##  $ FACILITY.CEDAR             : chr  NA NA NA NA ...
 ##  $ UTCTIME.CEDAR              : chr  NA NA NA NA ...
@@ -766,9 +785,9 @@ df_5 &lt;- df_nstre</code></pre>
 </div>
 <div id="write-to-csv" class="section level2">
 <h2>Write to CSV</h2>
-<pre class="r"><code>write.csv(df_3,&quot;C:\\Users\\maygo\\OneDrive\\Documents\\DAEN690-FAA-UAS\\0-Incidents_Cleaned.csv&quot;,row.names=FALSE)
-write.csv(df_4,&quot;C:\\Users\\maygo\\OneDrive\\Documents\\DAEN690-FAA-UAS\\1-Incidents_Cleaned_Standard.csv&quot;,row.names=FALSE)
-write.csv(df_5,&quot;C:\\Users\\maygo\\OneDrive\\Documents\\DAEN690-FAA-UAS\\2-Incidents_Cleaned_NonStandard.csv&quot;,row.names=FALSE)</code></pre>
+<pre class="r"><code>write.csv(df_3,&quot;C:\\Users\\maygo\\OneDrive\\Documents\\DAEN690-FAA-UAS\\00-Incidents_Cleaned.csv&quot;,row.names=FALSE)
+write.csv(df_4,&quot;C:\\Users\\maygo\\OneDrive\\Documents\\DAEN690-FAA-UAS\\01-Incidents_Cleaned_Standard.csv&quot;,row.names=FALSE)
+write.csv(df_5,&quot;C:\\Users\\maygo\\OneDrive\\Documents\\DAEN690-FAA-UAS\\02-Incidents_Cleaned_NonStandard.csv&quot;,row.names=FALSE)</code></pre>
 </div>
 <div id="determining-if-cedar-is-useful-for-this-analysis" class="section level2">
 <h2>Determining if CEDAR is useful for this analysis</h2>
@@ -779,15 +798,15 @@ df_cedar &lt;- na.omit(df_3, &quot;SUMMARY.CEDAR&quot;)
 nm_stand &lt;- str_extract(df_cedar$REMARKS,&#39;[0-9]*\\-*\\/*[0-9]*\\.*[0-9]\\.*[0-9]*(\\s*(nm|NM|miles|MILES)\\s*)(NORTH|SOUTH|EAST|WEST|(N|n)orth|(S|s)outh|(E|e)ast|(W|w)est|N|S|E|W|n|s|e|w|NW|NE|SW|SE|nw|ne|sw|se|SSE|SSW|SNE|SNW|NNE|NSE|NNE|NNW|WSW|WNW|WSE|WNE|ENE|ESE|ESW|ENW|sse|ssw|sne|snw|nne|nnw|wsw|wnw|wse|wne|ene|ese|esw|enw)*(\\s*(of|OF)\\s*[A-Z]{1,4}[0-9]{0,2})?&#39;)
 nm_stand</code></pre>
 <pre><code>##   [1] &quot;8 NM ESE of LAM&quot;    &quot;4 NM &quot;              &quot;3 NM SW of PIE&quot;    
-##   [4] &quot;4 NM north of SAV&quot;  &quot;10 NM NW of ORF&quot;    &quot;7 NM &quot;             
-##   [7] &quot;5 NM north of TEB&quot;  &quot;7NM W of ORL&quot;       NA                  
-##  [10] &quot;3NM NE of PVD&quot;      &quot;5 NM SSW of PDX&quot;    NA                  
-##  [13] &quot;10 NM W of PBI&quot;     &quot;5NM N of THV&quot;       &quot;2NM SE of VNY&quot;     
+##   [4] &quot;4 NM N of SAV&quot;      &quot;10 NM NW of ORF&quot;    &quot;7 NM &quot;             
+##   [7] &quot;5 NM N of TEB&quot;      &quot;7 NM W of ORL&quot;      NA                  
+##  [10] &quot;3 NM NE of PVD&quot;     &quot;5 NM SSW of PDX&quot;    NA                  
+##  [13] &quot;10 NM W of PBI&quot;     &quot;5 NM N of THV&quot;      &quot;2 NM SE of VNY&quot;    
 ##  [16] &quot;2 NM SW of PRC&quot;     &quot;7 NM E of IWS&quot;      &quot;14 NM SW of PMD&quot;   
-##  [19] &quot;11 NM NE of ILG&quot;    &quot;4NM NW of YIP&quot;      &quot;1 NM N of DEN&quot;     
+##  [19] &quot;11 NM NE of ILG&quot;    &quot;4 NM NW of YIP&quot;     &quot;1 NM N of DEN&quot;     
 ##  [22] &quot;5 NM W of UGN&quot;      &quot;10 NM W of IAH&quot;     &quot;5 NM S of MSN&quot;     
 ##  [25] NA                   &quot;2-3 NM &quot;            &quot;1 NM &quot;             
-##  [28] NA                   &quot;15 NM E of LAX&quot;     &quot;3NM &quot;              
+##  [28] NA                   &quot;15 NM E of LAX&quot;     &quot;3 NM &quot;             
 ##  [31] NA                   &quot;5.5 NM E of PHL&quot;    &quot;1 NM W of ORD&quot;     
 ##  [34] &quot;6 NM N of BAZ&quot;      &quot;2 NM SW of RDU&quot;     &quot;45 NM N of NID&quot;    
 ##  [37] NA                   NA                   &quot;3.5 NM SE of HVN&quot;  
@@ -795,11 +814,11 @@ nm_stand</code></pre>
 ##  [43] &quot;2 NM WNW of IWA&quot;    &quot;6 NM of NUN&quot;        &quot;7 NM E of ROA&quot;     
 ##  [46] NA                   &quot;6 NM NE of RSW&quot;     &quot;1 NM S of ORF&quot;     
 ##  [49] &quot;13 NM SE of PDX&quot;    &quot;2 NM &quot;              &quot;2 NM NE of O69&quot;    
-##  [52] &quot;32 NM NE of MXE&quot;    &quot;1 NM NW of FAI&quot;     &quot;2NM &quot;              
+##  [52] &quot;32 NM NE of MXE&quot;    &quot;1 NM NW of FAI&quot;     &quot;2 NM &quot;             
 ##  [55] NA                   NA                   &quot;10 NM NE of NGU&quot;   
 ##  [58] &quot;13 NM N of CDW&quot;     NA                   NA                  
 ##  [61] &quot;6 NM SW of ASH&quot;     &quot;8 NM NW of LAX&quot;     &quot;1/4 NM S&quot;          
-##  [64] &quot;10 NM E of PDX&quot;     &quot;5 NM north of LGA&quot;  &quot;5 NM SE of PVD&quot;    
+##  [64] &quot;10 NM E of PDX&quot;     &quot;5 NM N of LGA&quot;      &quot;5 NM SE of PVD&quot;    
 ##  [67] &quot;25 NM SE of ORD&quot;    &quot;24 NM WNW of LZU&quot;   &quot;6 NM NW of HWV&quot;    
 ##  [70] &quot;10 NM SW of PVD&quot;    &quot;8 NM W of DEN&quot;      NA                  
 ##  [73] &quot;1 NM NE of JFK&quot;     &quot;10 NM &quot;             &quot;5 NM S of ORD&quot;     
@@ -812,50 +831,50 @@ nm_stand</code></pre>
 ##  [94] &quot;5 NM E of PHL&quot;      NA                   &quot;12 NM E of SJU&quot;    
 ##  [97] NA                   NA                   &quot;1/2 NM E of PDK&quot;   
 ## [100] &quot;20 NM E of ORD&quot;     &quot;20 NM N of SLC&quot;     &quot;2.5 NM E of FLL&quot;   
-## [103] &quot;15 NM NE of GSO&quot;    &quot;8NM &quot;               &quot;4NM N of FZI&quot;      
-## [106] &quot;5NM S of FLL&quot;       &quot;7.5NM NW of PMP&quot;    &quot;16 NM NW of ORL&quot;   
-## [109] &quot;3 NM N of TEB&quot;      &quot;16 NM NE of SLI&quot;    &quot;41NM WNW of APE&quot;   
-## [112] &quot;2 miles SW of SMO&quot;  &quot;5NM S of DFW&quot;       &quot;4 NM S of SLC&quot;     
+## [103] &quot;15 NM NE of GSO&quot;    &quot;8 NM &quot;              &quot;4 NM N of FZI&quot;     
+## [106] &quot;5 NM S of FLL&quot;      &quot;7.5 NM NW of PMP&quot;   &quot;16 NM NW of ORL&quot;   
+## [109] &quot;3 NM N of TEB&quot;      &quot;16 NM NE of SLI&quot;    &quot;41 NM WNW of APE&quot;  
+## [112] &quot;2 miles SW of SMO&quot;  &quot;5 NM S of DFW&quot;      &quot;4 NM S of SLC&quot;     
 ## [115] &quot;5 NM S of DFW&quot;      &quot;2.5 NM NNE of TCH&quot;  &quot;12 NM E of LAM&quot;    
-## [118] &quot;1 NM S of APC&quot;      &quot;6NM W of EMT&quot;       NA                  
-## [121] &quot;5 NM SSE of TTN&quot;    &quot;6NM &quot;               NA                  
-## [124] &quot;3NM SE of MIE&quot;      &quot;14 miles NW of PHX&quot; &quot;15 NM SW of ORD&quot;   
-## [127] &quot;3 NM NW of PNE&quot;     &quot;12 NM SE of LBB&quot;    &quot;2NM &quot;              
-## [130] &quot;8 NM south of ADW&quot;  &quot;6NM NW of HOU&quot;      &quot;3 NM E of OOD&quot;     
+## [118] &quot;1 NM S of APC&quot;      &quot;6 NM W of EMT&quot;      NA                  
+## [121] &quot;5 NM SSE of TTN&quot;    &quot;6 NM &quot;              NA                  
+## [124] &quot;3 NM SE of MIE&quot;     &quot;14 miles NW of PHX&quot; &quot;15 NM SW of ORD&quot;   
+## [127] &quot;3 NM NW of PNE&quot;     &quot;12 NM SE of LBB&quot;    &quot;2 NM &quot;             
+## [130] &quot;8 NM S of ADW&quot;      &quot;6 NM NW of HOU&quot;     &quot;3 NM E of OOD&quot;     
 ## [133] &quot;5 NM NE of EWR&quot;     NA                   &quot;4 NM NW of LGA&quot;    
 ## [136] &quot;3 NM NW of TJSJ&quot;    &quot;13 NM SE of BXK&quot;    &quot;3 NM NW of MSP&quot;    
 ## [139] &quot;10 NM NW of IRW&quot;    NA                   NA                  
-## [142] &quot;10 NM NW of FLL&quot;    &quot;7 NM &quot;              &quot;4 NM north of OPF&quot; 
-## [145] &quot;4 NM east of PHX&quot;   &quot;11 NM east of ORD&quot;  &quot;7 NM west of AUS&quot;  
-## [148] &quot;15 NM west of AMN&quot;  &quot;40NM ENE of ORD&quot;    &quot;19 NM SW of SYR&quot;   
-## [151] &quot;10 NM N of BLV&quot;     &quot;10NM &quot;              &quot;1/8 NM east of MCO&quot;
-## [154] &quot;5NM WNW of ARR&quot;     &quot;2NM &quot;               &quot;6 NM north of CDW&quot; 
+## [142] &quot;10 NM NW of FLL&quot;    &quot;7 NM &quot;              &quot;4 NM N of OPF&quot;     
+## [145] &quot;4 NM E of PHX&quot;      &quot;11 NM E of ORD&quot;     &quot;7 NM W of AUS&quot;     
+## [148] &quot;15 NM W of AMN&quot;     &quot;40 NM ENE of ORD&quot;   &quot;19 NM SW of SYR&quot;   
+## [151] &quot;10 NM N of BLV&quot;     &quot;10 NM &quot;             &quot;1/8 NM E of MCO&quot;   
+## [154] &quot;5 NM WNW of ARR&quot;    &quot;2 NM &quot;              &quot;6 NM N of CDW&quot;     
 ## [157] &quot;1 NM S of ISM&quot;      &quot;23 NM NW of LGC&quot;    NA                  
 ## [160] &quot;10 NM E of IAH&quot;     &quot;10 NM SE of JAN&quot;    &quot;10 NM S of CLT&quot;    
-## [163] NA                   &quot;12NM S of CYN&quot;      &quot;6 NM W of LIT&quot;     
-## [166] &quot;1 NM NE of MDW&quot;     &quot;2 NM north of BAL&quot;  &quot;5 NM E of MIA&quot;     
+## [163] NA                   &quot;12 NM S of CYN&quot;     &quot;6 NM W of LIT&quot;     
+## [166] &quot;1 NM NE of MDW&quot;     &quot;2 NM N of BAL&quot;      &quot;5 NM E of MIA&quot;     
 ## [169] &quot;34 NM NW of ABI&quot;    &quot;3.5 NM NE of ADS&quot;   &quot;15 NM e of MDW&quot;    
 ## [172] &quot;9 NM W of FLL&quot;      &quot;8 NM &quot;              &quot;2 NM NE of LAX&quot;    
 ## [175] &quot;1 NM &quot;              &quot;10 NM &quot;             NA                  
 ## [178] &quot;1 NM N of LAS&quot;      &quot;2 NM E of LVK&quot;      &quot;26 NM NE of CLT&quot;   
 ## [181] &quot;36 NM SSW of JFK&quot;   NA                   &quot;23 NM W of ELD&quot;    
-## [184] &quot;4 NM W of TEB&quot;      &quot;10NM W of SFB&quot;      &quot;.5 NM south of AFW&quot;
-## [187] &quot;7 NM SW of RSW&quot;     &quot;28 NM SE of SJC&quot;    &quot;20 NM east of BAL&quot; 
-## [190] &quot;7NM SE of RIS&quot;      &quot;12 NM NE of LBL&quot;    &quot;4 NM NW of SNA&quot;    
-## [193] &quot;6 NM S of STL&quot;      &quot;3NM SW of SQL&quot;      &quot;2NM SW of HNL&quot;     
-## [196] &quot;2NM SW of HNL&quot;      &quot;8 NM W of ORL&quot;      &quot;4NM &quot;              
+## [184] &quot;4 NM W of TEB&quot;      &quot;10 NM W of SFB&quot;     &quot;.5 NM S of AFW&quot;    
+## [187] &quot;7 NM SW of RSW&quot;     &quot;28 NM SE of SJC&quot;    &quot;20 NM E of BAL&quot;    
+## [190] &quot;7 NM SE of RIS&quot;     &quot;12 NM NE of LBL&quot;    &quot;4 NM NW of SNA&quot;    
+## [193] &quot;6 NM S of STL&quot;      &quot;3 NM SW of SQL&quot;     &quot;2 NM SW of HNL&quot;    
+## [196] &quot;2 NM SW of HNL&quot;     &quot;8 NM W of ORL&quot;      &quot;4 NM &quot;             
 ## [199] &quot;3 NM NE of LAX&quot;     &quot;10 NM S of MMU&quot;     &quot;14 NM NE of BAL&quot;   
 ## [202] &quot;16 NM NE of RSW&quot;    &quot;15 NM N of HTO&quot;     &quot;3 NM NE of RNT&quot;    
 ## [205] &quot;1.5 NM SE of RYY&quot;   &quot;6 NM N of BOS&quot;      &quot;5 NM ENE of LAX&quot;   
 ## [208] &quot;15 NM SE of GEP&quot;    &quot;3 NM NE of LAX&quot;     &quot;1 NM NW of PDK&quot;    
-## [211] &quot;3NM W of LIT&quot;       &quot;.5 NM NE of BNA&quot;    &quot;20 NM NW of CQO&quot;   
+## [211] &quot;3 NM W of LIT&quot;      &quot;.5 NM NE of BNA&quot;    &quot;20 NM NW of CQO&quot;   
 ## [214] &quot;7 NM S of PDX&quot;      &quot;8 NM NW of MDW&quot;     &quot;3 NM NW of JFK&quot;    
-## [217] &quot;44 NM E of MKE&quot;     &quot;3 NM east of EWR&quot;   &quot;5 NM NE of EWR&quot;    
+## [217] &quot;44 NM E of MKE&quot;     &quot;3 NM E of EWR&quot;      &quot;5 NM NE of EWR&quot;    
 ## [220] &quot;8 NM SE of ORD&quot;     &quot;3 NM N of MCI&quot;      &quot;7 NM SSE of SKF&quot;   
 ## [223] NA                   &quot;4 NM W of IAH&quot;      &quot;4 NM  N of IAD&quot;    
 ## [226] &quot;3 NM N of CHS&quot;      &quot;23 NM E of SLI&quot;     &quot;7 miles SE of SRQ&quot; 
-## [229] &quot;11 NM SW of BUF&quot;    &quot;5 NM NE of RDU&quot;     &quot;6 NM west of PHX&quot;  
-## [232] &quot;3 NM north of VGT&quot;  &quot;5 NM S of CLT&quot;      &quot;11 NM NW of ORF&quot;   
+## [229] &quot;11 NM SW of BUF&quot;    &quot;5 NM NE of RDU&quot;     &quot;6 NM W of PHX&quot;     
+## [232] &quot;3 NM N of VGT&quot;      &quot;5 NM S of CLT&quot;      &quot;11 NM NW of ORF&quot;   
 ## [235] NA                   &quot;.3 NM W of PHL&quot;     &quot;7 miles E of SMO&quot;  
 ## [238] &quot;9 NM SW of MSP&quot;     &quot;4 NM NW of IAH&quot;     &quot;3 NM &quot;             
 ## [241] &quot;1 NM E of ORD&quot;      &quot;1 NM E of ORD&quot;      &quot;5 NM E of LEX&quot;     
@@ -890,94 +909,258 @@ df_4 %&gt;% count(year)</code></pre>
 ## 2: 2019 1198
 ## 3: 2020 1444
 ## 4: 2021 1735</code></pre>
-<pre class="r"><code>rmks &lt;- df_3 #8633
-
-# Extract all locations marked VOR (to use NAVAID dataset)
-pattern &lt;- c(&quot;VOR&quot;,&quot;vor&quot;)
-rmks_vor &lt;- rmks[grep(paste(pattern,collapse=&quot;|&quot;),rmks$REMARKS)] #70 (DIVE DEEPER IN {r vor})
-rmks &lt;- rmks[!grep(paste(pattern,collapse=&quot;|&quot;),rmks$REMARKS)]    #8563
-
-# Attempt to find XXX NM XXX of XXX format (OUT OF 8563)
-rmks$UASLOCATION &lt;- str_extract(rmks$REMARKS,&#39;[0-9]*\\-*\\/*[0-9]*\\.*[0-9]\\.*[0-9]*\\s?(nm|NM)\\s? (NORTH|SOUTH|EAST|WEST|(N|n)orth|(S|s)outh|(E|e)ast|(W|w)est|N|S|E|W|n|s|e|w|NW|NE|SW|SE|nw|ne|sw|se|SSE|SSW|SNE|SNW|NNE|NSE|NNE|NNW|WSW|WNW|WSE|WNE|ENE|ESE|ESW|ENW|sse|ssw|sne|snw|nne|nnw|wsw|wnw|wse|wne|ene|ese|esw|enw)*(\\s?(of|OF)\\s?[A-Z]{3,4})&#39;)
-
-# Extract all NA locations (OUT OF 8563)
-rmks_na &lt;- rmks[is.na(rmks$UASLOCATION)] #4182
-rmks &lt;- rmks[!is.na(rmks$UASLOCATION)] #4381
-
-write.csv(rmks,&quot;C:\\Users\\maygo\\OneDrive\\Documents\\DAEN690-FAA-UAS\\3-Incidents_Regex_WHOLE.csv&quot;,row.names=FALSE) #4381 (DONE: LINK TO AIRPORTS FOR NEXT STEP)
-write.csv(rmks_na,&quot;C:\\Users\\maygo\\OneDrive\\Documents\\DAEN690-FAA-UAS\\4-Incidents_Regex_NA.csv&quot;,row.names=FALSE) #4182 (DIVE DEEPER)</code></pre>
+<pre class="r"><code># rmks &lt;- df_3 #8633
+# 
+# # Extract all locations marked VOR (to use NAVAID dataset)
+# pattern &lt;- c(&quot;VOR&quot;,&quot;vor&quot;)
+# rmks_vor &lt;- rmks[grep(paste(pattern,collapse=&quot;|&quot;),rmks$REMARKS)] #70 (DIVE DEEPER IN {r vor}) ##DONE
+# rmks &lt;- rmks[!grep(paste(pattern,collapse=&quot;|&quot;),rmks$REMARKS)]    #8563
+# 
+# # Extract all locations marked RWY (to use RUNWAY dataset)
+# rmks_rwy &lt;- rmks[grepl(&quot;RWY&quot;,rmks$REMARKS)] #1239 (DIVE DEEPER in {r rwy})
+# rmks &lt;- rmks[!grepl(&quot;RWY&quot;,rmks$REMARKS)] #7324 (DIVE DEEPER)
+# 
+# write.csv(rmks_rwy,&quot;C:\\Users\\maygo\\OneDrive\\Documents\\DAEN690-FAA-UAS\\05-Incidents_Regex_RWY.csv&quot;,row.names=FALSE)
+# 
+# # Attempt to find XXX NM XXX of XXX format (OUT OF 7324)
+# rmks$UASLOCATION &lt;- str_extract(rmks$REMARKS,&#39;[0-9]*\\-*\\/*[0-9]*\\.*[0-9]\\.*[0-9]*\\s?(nm|NM)\\s? (NORTH|SOUTH|EAST|WEST|(N|n)orth|(S|s)outh|(E|e)ast|(W|w)est|N|S|E|W|n|s|e|w|NW|NE|SW|SE|nw|ne|sw|se|SSE|SSW|SNE|SNW|NNE|NSE|NNE|NNW|WSW|WNW|WSE|WNE|ENE|ESE|ESW|ENW|sse|ssw|sne|snw|nne|nnw|wsw|wnw|wse|wne|ene|ese|esw|enw)*(\\s?(of|OF)\\s?[A-Z]{3,4})&#39;)
+# 
+# # Extract all NA locations (OUT OF 8563)
+# rmks_na &lt;- rmks[is.na(rmks$UASLOCATION)] #3142 (DIVE DEEPER in {r nonstandard}
+#   write.csv(rmks_na,&quot;C:\\Users\\maygo\\OneDrive\\Documents\\DAEN690-FAA-UAS\\03-Incidents_Regex_AIRPORT_NEEDSMODIFIED.csv&quot;,row.names=FALSE) #3142
+# rmks &lt;- rmks[!is.na(rmks$UASLOCATION)] #4182
+#   rmks$DATASET &lt;- &quot;AIRPORT&quot;
+#   #Remove Duplicates (same sighting/different callsign or time)
+#   rmks &lt;- distinct(rmks,dateonly,UASLOCATION,.keep_all=TRUE) #4104
+#   write.csv(rmks,&quot;C:\\Users\\maygo\\OneDrive\\Documents\\DAEN690-FAA-UAS\\3.1-Incidents_Regex_AIRPORT_FULLFORMAT.csv&quot;,row.names=FALSE) #4104 (DONE: LINK TO AIRPORTS FOR NEXT STEP)</code></pre>
+</div>
+<div id="nonstandard-data" class="section level2">
+<h2>NONSTANDARD data</h2>
+<pre class="r"><code># 
+# rmks_na2 &lt;- rmks_na 
+#   rmks_na2$DATASET &lt;- &quot;AIRPORT&quot;
+# 
+#   # Attempt to find XXX NM XXX of XXX format (OUT OF 3142)
+#   rmks_na2$UASLOCATION &lt;- str_extract(rmks_na2$REMARKS,&#39;[0-9]*\\-*\\/*[0-9]*\\.*[0-9]\\.*[0-9]*\\s?(nm|NM)\\s? (NORTH|SOUTH|EAST|WEST|(N|n)orth|(S|s)outh|(E|e)ast|(W|w)est|N|S|E|W|n|s|e|w|NW|NE|SW|SE|nw|ne|sw|se|SSE|SSW|SNE|SNW|NNE|NSE|NNE|NNW|WSW|WNW|WSE|WNE|ENE|ESE|ESW|ENW|sse|ssw|sne|snw|nne|nnw|wsw|wnw|wse|wne|ene|ese|esw|enw)(\\s?[A-Z]{3,4})&#39;)
+#   # Extract all NA locations (OUT OF 3179)
+#   rmks_na3 &lt;- rmks_na2[!is.na(rmks_na2$UASLOCATION)]    #96
+#     rmks_nonstd_completed &lt;- rmks_na3 #96
+#   
+# ##----&gt;       NON-STANDARD DATASET (missing &quot;of&quot;)##
+#     write.csv(rmks_na3,&quot;C:\\Users\\maygo\\OneDrive\\Documents\\DAEN690-FAA-UAS\\3.2-Incidents_Regex_AIRPORT_NONSTD_SET1.csv&quot;,row.names=FALSE) #96
+# 
+#   rmks_na3_na &lt;- rmks_na2[is.na(rmks_na2$UASLOCATION)]  #3046 (DIVE DEEPER)
+#   # Attempt to find XXX NM XXX of XXX format (OUT OF 3142)
+#   rmks_na3_na$UASLOCATION &lt;- str_extract(rmks_na3_na$REMARKS,&#39;[0-9]*\\-*\\/*[0-9]*\\.*[0-9]\\.*[0-9]*\\s? (NORTH|SOUTH|EAST|WEST|(N|n)orth|(S|s)outh|(E|e)ast|(W|w)est|N|S|E|W|n|s|e|w|NW|NE|SW|SE|nw|ne|sw|se|SSE|SSW|SNE|SNW|NNE|NSE|NNE|NNW|WSW|WNW|WSE|WNE|ENE|ESE|ESW|ENW|sse|ssw|sne|snw|nne|nnw|wsw|wnw|wse|wne|ene|ese|esw|enw)(\\s?(of|OF)\\s?[A-Z]{3,4})&#39;)
+#   # Extract all NA locations (OUT OF 3179)
+#   rmks_na4 &lt;- rmks_na3_na[!is.na(rmks_na3_na$UASLOCATION)]    #173
+#     rmks_nonstd_completed &lt;- rbind(rmks_nonstd_completed,rmks_na4) #269
+#   
+# ##----&gt;       NON-STANDARD DATASET (missing &quot;NM&quot;)##
+#     write.csv(rmks_na4,&quot;C:\\Users\\maygo\\OneDrive\\Documents\\DAEN690-FAA-UAS\\3.3-Incidents_Regex_AIRPORT_NONSTD_SET2.csv&quot;,row.names=FALSE) #96  
+#   
+#   rmks_na4_na &lt;- rmks_na3_na[is.na(rmks_na3_na$UASLOCATION)]    #2873 (DIVE DEEPER)
+#   # Attempt to find XXX NM XXX of XXX format (OUT OF 2873)
+#   rmks_na4_na$UASLOCATION &lt;- str_extract(rmks_na4_na$REMARKS,&#39;[0-9]*\\-*\\/*[0-9]*\\.*[0-9]\\.*[0-9]*\\s?(nm|NM)\\s? (NORTH|SOUTH|EAST|WEST|(N|n)orth|(S|s)outh|(E|e)ast|(W|w)est|N|S|E|W|n|s|e|w|NW|NE|SW|SE|nw|ne|sw|se|SSE|SSW|SNE|SNW|NNE|NSE|NNE|NNW|WSW|WNW|WSE|WNE|ENE|ESE|ESW|ENW|sse|ssw|sne|snw|nne|nnw|wsw|wnw|wse|wne|ene|ese|esw|enw)&#39;)
+#   # Extract all NA locations (OUT OF 2940)
+#   rmks_na5 &lt;- rmks_na4_na[!is.na(rmks_na4_na$UASLOCATION)]    #409
+#     rmks_na5$UASLOCATION &lt;- paste(rmks_na5$UASLOCATION,&quot;of&quot;,rmks_na5$REPORTINGFACILITY)
+#     rmks_nonstd_completed &lt;- rbind(rmks_nonstd_completed,rmks_na5) #678
+#     
+# #!!!!!!!##----&gt;       NON-STANDARD DATASET (TAKEN FROM REPORTING FACILITY:: NEEDS IMMEDIATE ATTENTION FOR CLEANING)##
+#     write.csv(rmks_na5,&quot;C:\\Users\\maygo\\OneDrive\\Documents\\DAEN690-FAA-UAS\\3.4-Incidents_Regex_AIRPORT_NONSTD_SET3.csv&quot;,row.names=FALSE) #409
+#     
+#   rmks_na5_na &lt;- rmks_na4_na[is.na(rmks_na4_na$UASLOCATION)]    #2464
+#     # Attempt to find XXX NM XXX of XXX format (OUT OF 2464)
+#     rmks_na5_na$UASLOCATION &lt;- str_extract(rmks_na5_na$REMARKS,&#39;[0-9]*\\-*\\/*[0-9]*\\.*[0-9]\\.*[0-9]*\\s?((M|m)iles|MILES)\\s?(NORTH|SOUTH|EAST|WEST|(N|n)orth|(S|s)outh|(E|e)ast|(W|w)est|N|S|E|W|n|s|e|w|NW|NE|SW|SE|nw|ne|sw|se|SSE|SSW|SNE|SNW|NNE|NSE|NNE|NNW|WSW|WNW|WSE|WNE|ENE|ESE|ESW|ENW|sse|ssw|sne|snw|nne|nnw|wsw|wnw|wse|wne|ene|ese|esw|enw)(\\s?(of|OF)*\\s?)([A-Z]{3,5})&#39;)
+#     # Extract all NA locations (OUT OF 2940)
+#   rmks_na6 &lt;- rmks_na5_na[!is.na(rmks_na5_na$UASLOCATION)]    #127
+#     rmks_nonstd_completed &lt;- rbind(rmks_nonstd_completed,rmks_na6)
+#   rmks_na6_na &lt;- rmks_na5_na[is.na(rmks_na5_na$UASLOCATION)]    #2337  
+# 
+# write.csv(rmks_na6_na,&quot;C:\\Users\\maygo\\OneDrive\\Documents\\DAEN690-FAA-UAS\\3.5-Incidents_Regex_AIRPORT_NONSTD_SET4.csv&quot;,row.names=FALSE)</code></pre>
 </div>
 <div id="vor-data" class="section level2">
 <h2>VOR data</h2>
-<pre class="r"><code>rmks_vor2 &lt;- rmks_vor
-
-# Extract all locations marked RWY (to use RUNWAY dataset)
-rmks_vor_rwy &lt;- rmks_vor2[grepl(&quot;RWY&quot;,rmks_vor2$REMARKS)] #4 (DIVE DEEPER)
-  # Attempt to find XXX NM XXX of XXX format (OUT OF 66)
-  rmks_vor_rwy$REMARKS &lt;- gsub(&quot;Wiregrass&quot;,&quot;RRS&quot;,rmks_vor_rwy$REMARKS) #VOR CODE
-  rmks_vor_rwy$REMARKS &lt;- gsub(&quot;Penn Cove&quot;,&quot;CVV&quot;,rmks_vor_rwy$REMARKS) #VOR CODE
-  rmks_vor_rwy$UASLOCATION &lt;- str_extract(rmks_vor_rwy$REMARKS,&#39;[0-9]*\\-*\\/*[0-9]*\\.*[0-9]\\.*[0-9]*\\s?(nm|NM)\\s? (NORTH|SOUTH|EAST|WEST|(N|n)orth|(S|s)outh|(E|e)ast|(W|w)est|N|S|E|W|n|s|e|w|NW|NE|SW|SE|nw|ne|sw|se|SSE|SSW|SNE|SNW|NNE|NSE|NNE|NNW|WSW|WNW|WSE|WNE|ENE|ESE|ESW|ENW|sse|ssw|sne|snw|nne|nnw|wsw|wnw|wse|wne|ene|ese|esw|enw)*(\\s?(of|OF)\\s?[A-Z]{3,5})&#39;)
-  rmks_vor_rwy$RWYLOCATION &lt;- str_extract(rmks_vor_rwy$REMARKS,&#39;RWY\\s?[0-9]{2}&#39;)
-  # Extract all NA locations (OUT OF 70)
-  rmks_vor_rwy_completed &lt;- rmks_vor_rwy[!is.na(rmks_vor_rwy$UASLOCATION)]   #1
-  rmks_vor_rwy_na &lt;- rmks_vor_rwy[is.na(rmks_vor_rwy$UASLOCATION)]           #3 (DIVE DEEPER)
-    rmks_vor_rwy_na$UASLOCATION &lt;- str_extract(rmks_vor_rwy_na$REMARKS,&#39;([A-Z]{3,5})(\\sVOR)&#39;)
-  
-  ##VOR with RUNWAYS DATASET##
-  rmks_vor_rwy_completed &lt;- rbind(rmks_vor_rwy_completed,rmks_vor_rwy_na)
-    rmks_vor_rwy_completed$RWYLOCATION &lt;- gsub(&quot;(RWY)([0-9]{2})&quot;,&quot;\\1 \\2&quot;,rmks_vor_rwy_completed$RWYLOCATION)
-
-rmks_vor2 &lt;- rmks_vor2[!grepl(&quot;RWY&quot;,rmks_vor2$REMARKS)]   #66
-  # Attempt to find XXX NM XXX of XXX format (OUT OF 66)
-  rmks_vor2$UASLOCATION &lt;- str_extract(rmks_vor2$REMARKS,&#39;[0-9]*\\-*\\/*[0-9]*\\.*[0-9]\\.*[0-9]*\\s?(nm|NM)\\s? (NORTH|SOUTH|EAST|WEST|(N|n)orth|(S|s)outh|(E|e)ast|(W|w)est|N|S|E|W|n|s|e|w|NW|NE|SW|SE|nw|ne|sw|se|SSE|SSW|SNE|SNW|NNE|NSE|NNE|NNW|WSW|WNW|WSE|WNE|ENE|ESE|ESW|ENW|sse|ssw|sne|snw|nne|nnw|wsw|wnw|wse|wne|ene|ese|esw|enw)*(\\s?(of|OF)\\s?[A-Z]{3,5})&#39;)
-  # Extract all NA locations (OUT OF 70)
-  rmks_vor_completed &lt;- rmks_vor2[!is.na(rmks_vor2$UASLOCATION)]   #33 (GOOD TO GO)
-  rmks_vor2_na &lt;- rmks_vor2[is.na(rmks_vor2$UASLOCATION)]          #33 (DIVE DEEPER)
-    # Attempt to find XXX NM XXX (of) XXX format (modified)
-    rmks_vor2_na$REMARKS &lt;- gsub(&quot;Broadway&quot;,&quot;BWZ&quot;,rmks_vor2_na$REMARKS) #VOR CODE
-    rmks_vor2_na$REMARKS &lt;- gsub(&quot;Calverton&quot;,&quot;CCC&quot;,rmks_vor2_na$REMARKS) #VOR CODE
-    rmks_vor2_na$REMARKS &lt;- gsub(&quot;Wasatch&quot;,&quot;TCH&quot;,rmks_vor2_na$REMARKS) #VOR CODE
-    rmks_vor2_na$REMARKS &lt;- gsub(&quot;the TRV&quot;,&quot;TRV&quot;,rmks_vor2_na$REMARKS) #VOR CODE
-    rmks_vor2_na$REMARKS &lt;- gsub(&quot;Morgantown&quot;,&quot;of MGW&quot;,rmks_vor2_na$REMARKS) #VOR CODE
-    rmks_vor2_na$REMARKS &lt;- gsub(&quot;Dolphin&quot;,&quot;DHP&quot;,rmks_vor2_na$REMARKS) #VOR CODE
-    rmks_vor2_na$REMARKS &lt;- gsub(&quot;the Squaw Valley, CA \\(SWR\\)&quot;,&quot;SWR&quot;,rmks_vor2_na$REMARKS) #VOR CODE
-    rmks_vor2_na$REMARKS &lt;- gsub(&quot;Solberg&quot;,&quot;SBJ&quot;,rmks_vor2_na$REMARKS) #VOR CODE
-    rmks_vor2_na$UASLOCATION &lt;- str_extract(rmks_vor2_na$REMARKS,&#39;[0-9]*\\-*\\/*[0-9]*\\.*[0-9]\\.*[0-9]*\\s?(nm|NM)\\s?(NORTH|SOUTH|EAST|WEST|(N|n)orth|(S|s)outh|(E|e)ast|(W|w)est|N|S|E|W|n|s|e|w|NW|NE|SW|SE|nw|ne|sw|se|SSE|SSW|SNE|SNW|NNE|NSE|NNE|NNW|WSW|WNW|WSE|WNE|ENE|ESE|ESW|ENW|sse|ssw|sne|snw|nne|nnw|wsw|wnw|wse|wne|ene|ese|esw|enw)(\\s?(of|OF)*\\s?)([A-Z]{3,5})&#39;)
-    # Extract all NA locations (OUT OF 33)
-    rmks_vor3 &lt;- rmks_vor2_na[!is.na(rmks_vor2_na$UASLOCATION)]    #12
-      rmks_vor3$UASLOCATION &lt;- gsub(&quot;south&quot;,&quot;S&quot;,rmks_vor3$UASLOCATION)
-      rmks_vor3$UASLOCATION &lt;- gsub(&quot;([0-9]*[0-9]NM\\s?)([A-Z]{1,3}\\s)([A-Z]{3,5})&quot;,&quot;\\1\\2of \\3&quot;,rmks_vor3$UASLOCATION)
-      rmks_vor_completed &lt;- rbind(rmks_vor_completed,rmks_vor3) #45
-    rmks_vor3_na &lt;- rmks_vor2_na[is.na(rmks_vor2_na$UASLOCATION)] #21 (DIVE DEEPER)
-      # Attempt to find XXX miles XXX (of) XXX format (modified)
-      rmks_vor3_na$REMARKS &lt;- gsub(&quot;Fairfield&quot;,&quot;FFU&quot;,rmks_vor3_na$REMARKS) #VOR CODE
-      rmks_vor3_na$UASLOCATION &lt;- str_extract(rmks_vor3_na$REMARKS,&#39;[0-9]*\\-*\\/*[0-9]*\\.*[0-9]\\.*[0-9]*\\s?((M|m)iles|MILES)\\s?(NORTH|SOUTH|EAST|WEST|(N|n)orth|(S|s)outh|(E|e)ast|(W|w)est|N|S|E|W|n|s|e|w|NW|NE|SW|SE|nw|ne|sw|se|SSE|SSW|SNE|SNW|NNE|NSE|NNE|NNW|WSW|WNW|WSE|WNE|ENE|ESE|ESW|ENW|sse|ssw|sne|snw|nne|nnw|wsw|wnw|wse|wne|ene|ese|esw|enw)(\\s?(of|OF)*\\s?)([A-Z]{3,5})&#39;)
-      # Extract all NA locations (OUT OF 29)
-      rmks_vor4 &lt;- rmks_vor3_na[!is.na(rmks_vor3_na$UASLOCATION)]    #2
-        rmks_vor4$UASLOCATION &lt;- gsub(&quot;north&quot;,&quot;N&quot;,rmks_vor4$UASLOCATION)
-        rmks_vor4$UASLOCATION &lt;- gsub(&quot;([0-9]*[0-9]\\s?miles\\s?)([A-Z]{1,3}\\s)([A-Z]{3,5})&quot;,&quot;\\1\\2of \\3&quot;,rmks_vor4$UASLOCATION)
-        rmks_vor_completed &lt;- rbind(rmks_vor_completed,rmks_vor4) #47
-      rmks_vor4_na &lt;- rmks_vor3_na[is.na(rmks_vor3_na$UASLOCATION)] #19 (DIVE DEEPER)
-        # Attempt to find XXX miles XXX (of) (XXX) format (modified)
-        rmks_vor4_na$REMARKS &lt;- gsub(&quot;Shafter&quot;,&quot;MIT&quot;,rmks_vor4_na$REMARKS) #VOR CODE
-        rmks_vor4_na$REMARKS &lt;- gsub(&quot;Treasure&quot;,&quot;TRV&quot;,rmks_vor4_na$REMARKS) #VOR CODE
-        rmks_vor4_na$UASLOCATION &lt;- str_extract(rmks_vor4_na$REMARKS,&#39;[0-9]*\\-*\\/*[0-9]*\\.*[0-9]\\.*[0-9]*\\s?(NORTH|SOUTH|EAST|WEST|(N|n)orth|(S|s)outh|(E|e)ast|(W|w)est|N|S|E|W|n|s|e|w|NW|NE|SW|SE|nw|ne|sw|se|SSE|SSW|SNE|SNW|NNE|NSE|NNE|NNW|WSW|WNW|WSE|WNE|ENE|ESE|ESW|ENW|sse|ssw|sne|snw|nne|nnw|wsw|wnw|wse|wne|ene|ese|esw|enw)(\\s?(of|OF)*\\s?)([A-Z]{3,5})&#39;)
-        # Extract all NA locations (OUT OF 19)
-        rmks_vor5 &lt;- rmks_vor4_na[!is.na(rmks_vor4_na$UASLOCATION)]    #3
-          rmks_vor5$UASLOCATION &lt;- gsub(&quot;west&quot;,&quot;W&quot;,rmks_vor5$UASLOCATION)
-          rmks_vor_completed &lt;- rbind(rmks_vor_completed,rmks_vor5) #50
-        rmks_vor5_na &lt;- rmks_vor4_na[is.na(rmks_vor4_na$UASLOCATION)] #16 (DIVE DEEPER)
-          rmks_vor5_na$REMARKS &lt;- gsub(&quot;Sea Isle VORTAC&quot;,&quot;SIE VOR&quot;,rmks_vor5_na$REMARKS) #VOR CODE
-          rmks_vor5_na$REMARKS &lt;- gsub(&quot;Cowboy&quot;,&quot;CVE&quot;,rmks_vor5_na$REMARKS) #VOR CODE
-          rmks_vor5_na$REMARKS &lt;- gsub(&quot;OCN, Oceanside&quot;,&quot;OCN&quot;,rmks_vor5_na$REMARKS) #VOR CODE
-          rmks_vor5_na$REMARKS &lt;- gsub(&quot;ofDPA&quot;,&quot;DPA&quot;,rmks_vor5_na$REMARKS) #VOR CODE
-          rmks_vor5_na$REMARKS &lt;- gsub(&quot;Yardley VOR \\(ADR\\)&quot;,&quot;ADR VOR&quot;,rmks_vor5_na$REMARKS) #VOR CODE
-          rmks_vor5_na$REMARKS &lt;- gsub(&quot;MLFVOR&quot;,&quot;MLF VOR&quot;,rmks_vor5_na$REMARKS) #VOR CODE
-          rmks_vor5_na$REMARKS &lt;- gsub(&quot;PZD, Pecan&quot;,&quot;PZD&quot;,rmks_vor5_na$REMARKS) #VOR CODE
-          rmks_vor5_na$UASLOCATION &lt;- str_extract(rmks_vor5_na$REMARKS,&#39;([A-Z]{3,5})(\\sVOR)&#39;)
-          rmks_vor_completed &lt;- rbind(rmks_vor_completed,rmks_vor5_na) #66
-        
-  # write.csv(rmks_vor_completed,&quot;C:\\Users\\maygo\\OneDrive\\Documents\\DAEN690-FAA-UAS\\05-Incidents_Regex_VOR.csv&quot;,row.names=FALSE) #38 ##(DONE: LINK TO NAVAID FOR NEXT STEP)##</code></pre>
+<pre class="r"><code># rmks_vor2 &lt;- rmks_vor
+# 
+# # Extract all locations marked RWY (to use RUNWAY dataset)
+# rmks_vor_rwy &lt;- rmks_vor2[grepl(&quot;RWY&quot;,rmks_vor2$REMARKS)] #4 (DIVE DEEPER)
+#   # Attempt to find XXX NM XXX of XXX format (OUT OF 4)
+#   rmks_vor_rwy$REMARKS &lt;- gsub(&quot;Wiregrass&quot;,&quot;RRS&quot;,rmks_vor_rwy$REMARKS) #VOR CODE
+#   rmks_vor_rwy$REMARKS &lt;- gsub(&quot;Penn Cove&quot;,&quot;CVV&quot;,rmks_vor_rwy$REMARKS) #VOR CODE
+#   rmks_vor_rwy$UASLOCATION &lt;- str_extract(rmks_vor_rwy$REMARKS,&#39;[0-9]*\\-*\\/*[0-9]*\\.*[0-9]\\.*[0-9]*\\s?(nm|NM)\\s? (NORTH|SOUTH|EAST|WEST|(N|n)orth|(S|s)outh|(E|e)ast|(W|w)est|N|S|E|W|n|s|e|w|NW|NE|SW|SE|nw|ne|sw|se|SSE|SSW|SNE|SNW|NNE|NSE|NNE|NNW|WSW|WNW|WSE|WNE|ENE|ESE|ESW|ENW|sse|ssw|sne|snw|nne|nnw|wsw|wnw|wse|wne|ene|ese|esw|enw)*(\\s?(of|OF)\\s?[A-Z]{3,5})&#39;)
+#   rmks_vor_rwy$RWYLOCATION &lt;- str_extract(rmks_vor_rwy$REMARKS,&#39;RWY\\s?[0-9]{2}[L|R]?&#39;)
+#   rmks_vor_rwy$DATASET &lt;- &quot;NAVAID/RUNWAY&quot;
+#   # Extract all NA locations (OUT OF 4)
+#   rmks_vor_rwy_completed &lt;- rmks_vor_rwy[!is.na(rmks_vor_rwy$UASLOCATION)]   #1
+#   rmks_vor_rwy_na &lt;- rmks_vor_rwy[is.na(rmks_vor_rwy$UASLOCATION)]           #3 (DIVE DEEPER)
+#     rmks_vor_rwy_na$UASLOCATION &lt;- str_extract(rmks_vor_rwy_na$REMARKS,&#39;([A-Z]{3,5})(\\sVOR)&#39;)
+#   
+# ##----&gt;       VOR with RUNWAYS DATASET##
+#   rmks_vor_rwy_completed &lt;- rbind(rmks_vor_rwy_completed,rmks_vor_rwy_na)
+# #    rmks_vor_rwy_completed$RWYLOCATION &lt;- gsub(&quot;(RWY)([0-9]{2})&quot;,&quot;\\1 \\2&quot;,rmks_vor_rwy_completed$RWYLOCATION)
+#   write.csv(rmks_vor_rwy_completed,&quot;C:\\Users\\maygo\\OneDrive\\Documents\\DAEN690-FAA-UAS\\4.2-Incidents_Regex_VOR_RWY.csv&quot;,row.names=FALSE)
+# 
+# rmks_vor2 &lt;- rmks_vor2[!grepl(&quot;RWY&quot;,rmks_vor2$REMARKS)]   #66
+#   # Attempt to find XXX NM XXX of XXX format (OUT OF 66)
+#   rmks_vor2$UASLOCATION &lt;- str_extract(rmks_vor2$REMARKS,&#39;[0-9]*\\-*\\/*[0-9]*\\.*[0-9]\\.*[0-9]*\\s?(nm|NM)\\s? (NORTH|SOUTH|EAST|WEST|(N|n)orth|(S|s)outh|(E|e)ast|(W|w)est|N|S|E|W|n|s|e|w|NW|NE|SW|SE|nw|ne|sw|se|SSE|SSW|SNE|SNW|NNE|NSE|NNE|NNW|WSW|WNW|WSE|WNE|ENE|ESE|ESW|ENW|sse|ssw|sne|snw|nne|nnw|wsw|wnw|wse|wne|ene|ese|esw|enw)*(\\s?(of|OF)\\s?[A-Z]{3,5})&#39;)
+#   rmks_vor2$DATASET &lt;- &quot;NAVAID&quot;
+#   # Extract all NA locations (OUT OF 66)
+#   rmks_vor_completed &lt;- rmks_vor2[!is.na(rmks_vor2$UASLOCATION)]   #33 (GOOD TO GO)
+#   rmks_vor2_na &lt;- rmks_vor2[is.na(rmks_vor2$UASLOCATION)]          #33 (DIVE DEEPER)
+#     # Attempt to find XXX NM XXX (of) XXX format (modified)
+#     rmks_vor2_na$REMARKS &lt;- gsub(&quot;Broadway&quot;,&quot;BWZ&quot;,rmks_vor2_na$REMARKS) #VOR CODE
+#     rmks_vor2_na$REMARKS &lt;- gsub(&quot;Calverton&quot;,&quot;CCC&quot;,rmks_vor2_na$REMARKS) #VOR CODE
+#     rmks_vor2_na$REMARKS &lt;- gsub(&quot;Wasatch&quot;,&quot;TCH&quot;,rmks_vor2_na$REMARKS) #VOR CODE
+#     rmks_vor2_na$REMARKS &lt;- gsub(&quot;the TRV&quot;,&quot;TRV&quot;,rmks_vor2_na$REMARKS) #VOR CODE
+#     rmks_vor2_na$REMARKS &lt;- gsub(&quot;Morgantown&quot;,&quot;of MGW&quot;,rmks_vor2_na$REMARKS) #VOR CODE
+#     rmks_vor2_na$REMARKS &lt;- gsub(&quot;Dolphin&quot;,&quot;DHP&quot;,rmks_vor2_na$REMARKS) #VOR CODE
+#     rmks_vor2_na$REMARKS &lt;- gsub(&quot;the Squaw Valley, CA \\(SWR\\)&quot;,&quot;SWR&quot;,rmks_vor2_na$REMARKS) #VOR CODE
+#     rmks_vor2_na$REMARKS &lt;- gsub(&quot;Solberg&quot;,&quot;SBJ&quot;,rmks_vor2_na$REMARKS) #VOR CODE
+#     rmks_vor2_na$UASLOCATION &lt;- str_extract(rmks_vor2_na$REMARKS,&#39;[0-9]*\\-*\\/*[0-9]*\\.*[0-9]\\.*[0-9]*\\s?(nm|NM)\\s?(NORTH|SOUTH|EAST|WEST|(N|n)orth|(S|s)outh|(E|e)ast|(W|w)est|N|S|E|W|n|s|e|w|NW|NE|SW|SE|nw|ne|sw|se|SSE|SSW|SNE|SNW|NNE|NSE|NNE|NNW|WSW|WNW|WSE|WNE|ENE|ESE|ESW|ENW|sse|ssw|sne|snw|nne|nnw|wsw|wnw|wse|wne|ene|ese|esw|enw)(\\s?(of|OF)*\\s?)([A-Z]{3,5})&#39;)
+#     # Extract all NA locations (OUT OF 33)
+#     rmks_vor3 &lt;- rmks_vor2_na[!is.na(rmks_vor2_na$UASLOCATION)]    #12
+#       rmks_vor3$UASLOCATION &lt;- gsub(&quot;south&quot;,&quot;S&quot;,rmks_vor3$UASLOCATION)
+#       rmks_vor3$UASLOCATION &lt;- gsub(&quot;([0-9]*[0-9]NM\\s?)([A-Z]{1,3}\\s)([A-Z]{3,5})&quot;,&quot;\\1\\2of \\3&quot;,rmks_vor3$UASLOCATION)
+#       rmks_vor_completed &lt;- rbind(rmks_vor_completed,rmks_vor3) #45
+#       
+# ##----&gt;       VOR with FULL FORMAT DATASET##
+#       write.csv(rmks_vor_completed,&quot;C:\\Users\\maygo\\OneDrive\\Documents\\DAEN690-FAA-UAS\\4.1-Incidents_Regex_VOR_FULLFORMAT.csv&quot;,row.names=FALSE)
+#       
+#     rmks_vor3_na &lt;- rmks_vor2_na[is.na(rmks_vor2_na$UASLOCATION)] #21 (DIVE DEEPER)
+#       # Attempt to find XXX miles XXX (of) XXX format (modified)
+#       rmks_vor3_na$REMARKS &lt;- gsub(&quot;Fairfield&quot;,&quot;FFU&quot;,rmks_vor3_na$REMARKS) #VOR CODE
+#       rmks_vor3_na$UASLOCATION &lt;- str_extract(rmks_vor3_na$REMARKS,&#39;[0-9]*\\-*\\/*[0-9]*\\.*[0-9]\\.*[0-9]*\\s?((M|m)iles|MILES)\\s?(NORTH|SOUTH|EAST|WEST|(N|n)orth|(S|s)outh|(E|e)ast|(W|w)est|N|S|E|W|n|s|e|w|NW|NE|SW|SE|nw|ne|sw|se|SSE|SSW|SNE|SNW|NNE|NSE|NNE|NNW|WSW|WNW|WSE|WNE|ENE|ESE|ESW|ENW|sse|ssw|sne|snw|nne|nnw|wsw|wnw|wse|wne|ene|ese|esw|enw)(\\s?(of|OF)*\\s?)([A-Z]{3,5})&#39;)
+#       # Extract all NA locations (OUT OF 29)
+#       rmks_vor4 &lt;- rmks_vor3_na[!is.na(rmks_vor3_na$UASLOCATION)]    #2
+#         rmks_vor4$UASLOCATION &lt;- gsub(&quot;([0-9]*[0-9]\\s?miles\\s?)([A-Z]{1,3}\\s)([A-Z]{3,5})&quot;,&quot;\\1\\2of \\3&quot;,rmks_vor4$UASLOCATION)
+#         rmks_vor_completed &lt;- rbind(rmks_vor_completed,rmks_vor4) #47
+#         
+# ##----&gt;       VOR with MILES##
+#         write.csv(rmks_vor4,&quot;C:\\Users\\maygo\\OneDrive\\Documents\\DAEN690-FAA-UAS\\4.3-Incidents_Regex_VOR_MILES.csv&quot;,row.names=FALSE)        
+#         
+#       rmks_vor4_na &lt;- rmks_vor3_na[is.na(rmks_vor3_na$UASLOCATION)] #19 (DIVE DEEPER)
+#         # Attempt to find XXX miles XXX (of) (XXX) format (modified)
+#         rmks_vor4_na$REMARKS &lt;- gsub(&quot;Shafter&quot;,&quot;MIT&quot;,rmks_vor4_na$REMARKS) #VOR CODE
+#         rmks_vor4_na$REMARKS &lt;- gsub(&quot;Treasure&quot;,&quot;TRV&quot;,rmks_vor4_na$REMARKS) #VOR CODE
+#         rmks_vor4_na$UASLOCATION &lt;- str_extract(rmks_vor4_na$REMARKS,&#39;[0-9]*\\-*\\/*[0-9]*\\.*[0-9]\\.*[0-9]*\\s?(NORTH|SOUTH|EAST|WEST|(N|n)orth|(S|s)outh|(E|e)ast|(W|w)est|N|S|E|W|n|s|e|w|NW|NE|SW|SE|nw|ne|sw|se|SSE|SSW|SNE|SNW|NNE|NSE|NNE|NNW|WSW|WNW|WSE|WNE|ENE|ESE|ESW|ENW|sse|ssw|sne|snw|nne|nnw|wsw|wnw|wse|wne|ene|ese|esw|enw)(\\s?(of|OF)*\\s?)([A-Z]{3,5})&#39;)
+#         # Extract all NA locations (OUT OF 19)
+#         rmks_vor5 &lt;- rmks_vor4_na[!is.na(rmks_vor4_na$UASLOCATION)]    #3
+#         rmks_vor_completed &lt;- rbind(rmks_vor_completed,rmks_vor5) #50
+#           
+# ##----&gt;       VOR with NONM##
+#         write.csv(rmks_vor5,&quot;C:\\Users\\maygo\\OneDrive\\Documents\\DAEN690-FAA-UAS\\4.4-Incidents_Regex_VOR_NONM.csv&quot;,row.names=FALSE)
+#           
+#         rmks_vor5_na &lt;- rmks_vor4_na[is.na(rmks_vor4_na$UASLOCATION)] #16 (DIVE DEEPER)
+#           rmks_vor5_na$REMARKS &lt;- gsub(&quot;Sea Isle VORTAC&quot;,&quot;SIE VOR&quot;,rmks_vor5_na$REMARKS) #VOR CODE
+#           rmks_vor5_na$REMARKS &lt;- gsub(&quot;Cowboy&quot;,&quot;CVE&quot;,rmks_vor5_na$REMARKS) #VOR CODE
+#           rmks_vor5_na$REMARKS &lt;- gsub(&quot;OCN, Oceanside&quot;,&quot;OCN&quot;,rmks_vor5_na$REMARKS) #VOR CODE
+#           rmks_vor5_na$REMARKS &lt;- gsub(&quot;ofDPA&quot;,&quot;DPA&quot;,rmks_vor5_na$REMARKS) #VOR CODE
+#           rmks_vor5_na$REMARKS &lt;- gsub(&quot;Yardley VOR \\(ADR\\)&quot;,&quot;ADR VOR&quot;,rmks_vor5_na$REMARKS) #VOR CODE
+#           rmks_vor5_na$REMARKS &lt;- gsub(&quot;MLFVOR&quot;,&quot;MLF VOR&quot;,rmks_vor5_na$REMARKS) #VOR CODE
+#           rmks_vor5_na$REMARKS &lt;- gsub(&quot;PZD, Pecan&quot;,&quot;PZD&quot;,rmks_vor5_na$REMARKS) #VOR CODE
+#           rmks_vor5_na$UASLOCATION &lt;- str_extract(rmks_vor5_na$REMARKS,&#39;([A-Z]{3,5})(\\sVOR)&#39;)
+#           
+# ##----&gt;       VOR with VICINITYONLY##
+#           write.csv(rmks_vor5_na,&quot;C:\\Users\\maygo\\OneDrive\\Documents\\DAEN690-FAA-UAS\\4.5-Incidents_Regex_VOR_VICINITYONLY.csv&quot;,row.names=FALSE)
+#           
+#           rmks_vor_completed &lt;- rbind(rmks_vor_completed,rmks_vor5_na) #66
+#           rmks_vor_completed &lt;- rbind(rmks_vor_completed,rmks_vor_rwy_completed, fill=TRUE)
+# 
+# rmks_vor_completed &lt;- arrange(rmks_vor_completed,DATE)
+# #Remove Duplicates (same sighting/different callsign or time)
+# rmks_vor_completed &lt;- distinct(rmks_vor_completed,dateonly,UASLOCATION,.keep_all=TRUE) #68
+#         
+# write.csv(rmks_vor_completed,&quot;C:\\Users\\maygo\\OneDrive\\Documents\\DAEN690-FAA-UAS\\04-Incidents_Regex_VOR.csv&quot;,row.names=FALSE) #68 ##(DONE: LINK TO NAVAID FOR NEXT STEP)##</code></pre>
+</div>
+<div id="cleaning-remaining-files-from-standardized-dataset" class="section level2">
+<h2>Cleaning Remaining Files from Standardized Dataset</h2>
+<pre class="r"><code># file &lt;- &quot;std_missing_30_ALLROWS.csv&quot;
+# std &lt;- read.csv(file,header = TRUE, stringsAsFactors = FALSE, na.strings=c(&quot;NA&quot;,&quot;N/A&quot;,&quot;&quot;,&quot;na&quot;,&quot;Na&quot;,&quot;n/a&quot;,&quot;N/a&quot;,&quot;NaN&quot;,&quot;nA&quot;))
+# setDT(std)
+# 
+# # Extract all locations marked VOR (to use NAVAID dataset)
+# pattern &lt;- c(&quot;VOR&quot;,&quot;vor&quot;)
+# std$REMARKS &lt;- gsub(&quot;RIS&quot;,&quot;RIS VOR&quot;,std$REMARKS) #RIS is Riverside VOR in MO
+# std$REMARKS &lt;- gsub(&quot;CQO&quot;,&quot;CQO VOR&quot;,std$REMARKS) #CQO is Choo Choo VOR in TN #Different Source says GQO
+# std$REMARKS &lt;- gsub(&quot;WASATEC&quot;,&quot;TCH&quot;,std$REMARKS) #TCH is Wasatch VOR in UT #REMARKS MISPELLED
+# std_vor &lt;- std[grep(paste(pattern,collapse=&quot;|&quot;),std$REMARKS)] #3 (DIVE DEEPER)
+#   # Attempt to find XXX NM XXX of XXX format (OUT OF 13)
+#   std_vor$UASLOCATION &lt;- str_extract(std_vor$REMARKS,&#39;[0-9]*\\-*\\/*[0-9]*\\.*[0-9]\\.*[0-9]*\\s?(nm|NM)\\s? (NORTH|SOUTH|EAST|WEST|(N|n)orth|(S|s)outh|(E|e)ast|(W|w)est|N|S|E|W|n|s|e|w|NW|NE|SW|SE|nw|ne|sw|se|SSE|SSW|SNE|SNW|NNE|NSE|NNE|NNW|WSW|WNW|WSE|WNE|ENE|ESE|ESW|ENW|sse|ssw|sne|snw|nne|nnw|wsw|wnw|wse|wne|ene|ese|esw|enw)*(\\s?(of|OF)\\s?[A-Z]{3,4})&#39;)
+#   std_vor$DATASET &lt;- &quot;NAVAID&quot;
+#   std_vor$UASLOCATION &lt;- gsub(&quot;([0-9]*\\-*\\/*[0-9]*\\.*[0-9]\\.*[0-9]*)(NM)&quot;,&quot;\\1 \\2&quot;,std_vor$UASLOCATION)
+#   std_completed &lt;- std_vor #3
+#   
+# ##----&gt;       MISSING STANDARD INCIDENTS with VOR DATASET##
+#     write.csv(std_vor,&quot;C:\\Users\\maygo\\OneDrive\\Documents\\DAEN690-FAA-UAS\\6.3-MissingStandard_Incidents_VOR.csv&quot;,row.names=FALSE) #14 #DONE  
+#   
+# std &lt;- std[!grep(paste(pattern,collapse=&quot;|&quot;),std$REMARKS)]    #27 (DIVE DEEPER {RWY AND REGULAR})
+#   # Extract all locations marked RWY (to use RUNWAY dataset)
+#   std_rwy &lt;- std[grepl(&quot;RWY&quot;,std$REMARKS)] #14
+#   std_rwy$DATASET &lt;- &quot;AIRPORT/RUNWAY&quot;
+#     # Attempt to find XXX NM XXX of XXX format (OUT OF 14)
+#     std_rwy$UASLOCATION &lt;- str_extract(std_rwy$REMARKS,&#39;[0-9]*\\-*\\/*[0-9]*\\.*[0-9]\\.*[0-9]*\\s?(nm|NM)\\s? (NORTH|SOUTH|EAST|WEST|(N|n)orth|(S|s)outh|(E|e)ast|(W|w)est|N|S|E|W|n|s|e|w|NW|NE|SW|SE|nw|ne|sw|se|SSE|SSW|SNE|SNW|NNE|NSE|NNE|NNW|WSW|WNW|WSE|WNE|ENE|ESE|ESW|ENW|sse|ssw|sne|snw|nne|nnw|wsw|wnw|wse|wne|ene|ese|esw|enw)*(\\s?(of|OF))&#39;)
+#     # Extract all NA locations (OUT OF 8563)
+#     std2_rwy_na &lt;- std_rwy[is.na(std_rwy$UASLOCATION)] #0
+#     std2_rwy &lt;- std_rwy[!is.na(std_rwy$UASLOCATION)] #13
+#       std2_rwy$UASLOCATION &lt;- gsub(&quot;([0-9]*\\-*\\/*[0-9]*\\.*[0-9]\\.*[0-9]*)(NM)&quot;,&quot;\\1 \\2&quot;,std2_rwy$UASLOCATION)
+#       std2_rwy$UASLOCATION &lt;- gsub(&quot;([A-Z]{1,3})(of)&quot;,&quot;\\1 \\2&quot;,std2_rwy$UASLOCATION)
+#       std2_rwy$UASLOCATION &lt;- paste(std2_rwy$UASLOCATION,std2_rwy$REPORTINGFACILITY)
+#         # SIG is Puerto Rico Airport
+#         # END is AFB
+#         std$REMARKS &lt;- gsub(&quot;L30&quot;,&quot;LAS&quot;,std$REMARKS) #L30 is AREA, LAS is Airport
+#       std2_rwy$RWYLOCATION &lt;- str_extract(std2_rwy$REMARKS,&#39;RWY\\s?[0-9]{1,2}[L|R|C]?&#39;)
+#       std2_rwy$RWYLOCATION &lt;- gsub(&quot;(RWY)([0-9]{1,2})&quot;,&quot;\\1 \\2&quot;,std2_rwy$RWYLOCATION)
+#       std2_rwy$RWYLOCATION &lt;- gsub(&quot;(RWY\\s)(8|9)&quot;,&quot;\\10\\2&quot;,std2_rwy$RWYLOCATION)
+#       std_completed &lt;- rbind(std_completed,std2_rwy, fill=TRUE) #17
+#       
+# ##----&gt;       MISSING STANDARD INCIDENTS with RUNWAYS DATASET##
+#     write.csv(std2_rwy,&quot;C:\\Users\\maygo\\OneDrive\\Documents\\DAEN690-FAA-UAS\\6.2-MissingStandard_Incidents_RWY.csv&quot;,row.names=FALSE) #14 #DONE
+#   
+#   # Extract all other locations 
+#   std &lt;- std[!grepl(&quot;RWY&quot;,std$REMARKS)] #13
+#   std$DATASET &lt;- &quot;AIRPORT&quot;
+#     # Attempt to find XXX NM XXX of XXX format (OUT OF 13)
+#     #OUC - PAMLICO NDB Lat/Long 35°9&#39;30.60&quot;N, 76°45&#39;45.73&quot;W
+#     #BEQ - BESSEMER NDB (EKY) Lat/Long 33°18&#39;45.40&quot;N, 86°55&#39;34.70&quot;W
+#     #BURDY (waypoint) Lat/long    41°57&#39;19.140&quot;N, 70°57&#39;07.450&quot;W
+#     #CEDES (waypoint) Lat/long    37°33&#39;02.960&quot;N, 121°37&#39;28.510&quot;W
+#     #HSN ??? - Taking from Reporting Facility
+#     #HUB ??? - Taking from Most Likely, HOU
+#     std$REMARKS &lt;- gsub(&quot;FTG&quot;,&quot;CFO&quot;,std$REMARKS) #OUTDATED CODE
+#     std$REMARKS &lt;- gsub(&quot;XXX&quot;,&quot;FFZ&quot;,std$REMARKS) #MISSING CODE FROM REPORTING FACILITY
+#     std$REMARKS &lt;- gsub(&quot;UOA&quot;,&quot;UAO&quot;,std$REMARKS) #TYPO, FROM REPORTING FACILITY
+#     std$REMARKS &lt;- gsub(&quot;DEM&quot;,&quot;DEN&quot;,std$REMARKS) #MOST LIKELY TYPO ## D01 IS AREA, DEN IS FACILITY
+#     std$REMARKS &lt;- gsub(&quot;HUB&quot;,&quot;HOU&quot;,std$REMARKS) #I09 is AREA, HOU IS MOST LIKELY FACILITY
+#     std$REMARKS &lt;- gsub(&quot;HEMET&quot;,&quot;HMT&quot;,std$REMARKS) #HEMET IS NAME OF AIRPORT, HMT IS CODE
+#     std$REMARKS &lt;- gsub(&quot;HSN&quot;,&quot;OKC&quot;,std$REMARKS) #FROM REPORTING FACILITY
+#     std$REMARKS &lt;- gsub(&quot;LIV&quot;,&quot;LKV&quot;,std$REMARKS) #TYPO, FROM PD NOTIF
+#     std$REMARKS &lt;- gsub(&quot;BEQ&quot;,&quot;EKY&quot;,std$REMARKS) #From OPENNAV
+#     std$UASLOCATION &lt;- str_extract(std$REMARKS,&#39;[0-9]*\\-*\\/*[0-9]*\\.*[0-9]\\.*[0-9]*\\s?(nm|NM)\\s? (NORTH|SOUTH|EAST|WEST|(N|n)orth|(S|s)outh|(E|e)ast|(W|w)est|N|S|E|W|n|s|e|w|NW|NE|SW|SE|nw|ne|sw|se|SSE|SSW|SNE|SNW|NNE|NSE|NNE|NNW|WSW|WNW|WSE|WNE|ENE|ESE|ESW|ENW|sse|ssw|sne|snw|nne|nnw|wsw|wnw|wse|wne|ene|ese|esw|enw)*(\\s?(of|OF)\\s?[A-Z]{3,5})&#39;)
+#     # Extract all NA locations (OUT OF 8563)
+#     std2_na &lt;- std[is.na(std$UASLOCATION)] #0
+#     std2 &lt;- std[!is.na(std$UASLOCATION)] #13
+#       std2$UASLOCATION &lt;- gsub(&quot;([0-9]*\\-*\\/*[0-9]*\\.*[0-9]\\.*[0-9]*)(NM)&quot;,&quot;\\1 \\2&quot;,std2$UASLOCATION)
+#       pattern &lt;- c(&quot;BURDY&quot;,&quot;CEDES&quot;)
+#       std3 &lt;- std2[!grep(paste(pattern,collapse=&quot;|&quot;),std2$REMARKS)] #11
+#       std_completed &lt;- rbind(std_completed,std3, fill=TRUE) #28
+#     
+# ##----&gt;       MISSING STANDARD INCIDENTS with FULL FORMAT DATASET##
+#         write.csv(std3,&quot;C:\\Users\\maygo\\OneDrive\\Documents\\DAEN690-FAA-UAS\\6.1-MissingStandard_Incidents_AIRPORT_FULLFORMAT.csv&quot;,row.names=FALSE) #11 #DONE
+#       std_waypoint &lt;- std2[grep(paste(pattern,collapse=&quot;|&quot;),std2$REMARKS)] #2
+#       std_waypoint$waypoint_lat &lt;- c(&quot;41° 57&#39; 19.140\&quot; N&quot;,&quot;37° 33&#39; 02.960\&quot; N&quot;)
+#       std_waypoint$waypoint_long &lt;- c(&quot;86° 55&#39; 34.70\&quot; W&quot;,&quot;121° 37&#39; 28.510\&quot; W&quot;)
+#       std_waypoint$DATASET &lt;- &quot;LAT/LONG PROVIDED&quot;
+#       std_completed &lt;- rbind(std_completed,std_waypoint, fill=TRUE) #30
+#     
+# ##----&gt;       MISSING STANDARD INCIDENTS with WAYPOINTS DATASET##
+#       write.csv(std_waypoint,&quot;C:\\Users\\maygo\\OneDrive\\Documents\\DAEN690-FAA-UAS\\6.4-MissingStandard_Incidents_AIRPORT_WAYPOINTS.csv&quot;,row.names=FALSE) #2 DONE
+#       
+# std_completed &lt;- arrange(std_completed,DATE)
+# #Remove Duplicates (same sighting/different callsign or time)
+# std_completed &lt;- distinct(std_completed,dateonly,UASLOCATION,.keep_all=TRUE) #68
+#   write.csv(std_completed,&quot;C:\\Users\\maygo\\OneDrive\\Documents\\DAEN690-FAA-UAS\\06-MissingStandard_Incidents_AIRPORT.csv&quot;,row.names=FALSE) #30 #DONE    </code></pre>
 </div>
 
 
