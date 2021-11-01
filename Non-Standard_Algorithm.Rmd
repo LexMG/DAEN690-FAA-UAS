@@ -1,0 +1,140 @@
+---
+title: "Incidents - Non-Standard Algorithm"
+author: "Lex Gourley"
+date: "10/14/2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+require(data.table)
+require(ggplot2)
+require(MASS)
+require(tidyverse)
+require(janitor)
+require(chron)
+require(stringr)
+require(tm)
+require(qdap)
+
+knitr::opts_knit$set(root.dir = "C://Users//maygo//OneDrive//Documents//DAEN690-FAA-UAS//DATA")
+```
+
+```{r read}
+#enter name of file
+file <- "1 - Non-Standard_2057.csv" 
+airport <- read.csv("airports_cleaned.csv",header = TRUE, stringsAsFactors = FALSE, na.strings=c("NA","N/A","","na","Na","n/a","N/a","NaN","nA"))
+navaid <- read.csv("NAVAID_System.csv",header = TRUE, stringsAsFactors = FALSE, na.strings=c("NA","N/A","","na","Na","n/a","N/a","NaN","nA"))
+filename <- gsub(pattern="\\.csv$","",file)
+df <- read.csv(file,header = TRUE, stringsAsFactors = FALSE, na.strings=c("NA","N/A","","na","Na","n/a","N/a","NaN","nA"))
+setDT(df)
+
+#standardize dataset
+df$REMARKS <- gsub("runway","RWY",df$REMARKS)
+df$REMARKS <- gsub("Runway","RWY",df$REMARKS)
+df$REMARKS <- gsub("RUNWAY","RWY",df$REMARKS)
+df$REMARKS <- gsub("(M|m)iles?","NM",df$REMARKS)
+df$REMARKS <- gsub("UAS","uas",df$REMARKS)
+df <- df[!grepl("COORDINATION",df$PRIMARYCODE)]
+df <- df[!grepl("COORDINATION",df$SECONDARYCODES)]
+
+#extract all navaid
+pattern <- c("VOR","vor","NDB","ndb")
+df_2 <- df[grep(paste(pattern,collapse="|"),df$REMARKS)]
+df_2$DATASET <- "NAVAID"
+df_2$UASLOCATION <- str_extract(df_2$REMARKS,'[0-9]*[.|-|/]*[0-9]*\\s?(nm|NM)\\s?(N|S|E|W|NW|NE|SW|SE|SSE|SSW|SNE|SNW|NNE|NSE|NNE|NNW|WSW|WNW|WSE|WNE|ENE|ESE|ESW|ENW) (\\s?(of|OF)?\\s?)([A-Z]{3})')
+df_navaid <- df_2[!is.na(df_2$UASLOCATION)]
+df_navaid <- distinct(df_navaid,dateonly,UASLOCATION,.keep_all=TRUE)
+df_navaid_na <- df_2[is.na(df_2$UASLOCATION)]
+df_navaid_na$UASLOCATION <- df_navaid_na$REPORTINGFACILITY
+df_navaid_dups <- df_navaid_na[duplicated(df_navaid_na[,c("dateonly","UASLOCATION")]),]
+df_navaid_na <- distinct(df_navaid_na,dateonly,UASLOCATION,.keep_all=TRUE)
+
+#extract all runway
+df_3 <- df[!grep(paste(pattern,collapse="|"),df$REMARKS)]
+df_3$RWYLOCATION <- str_extract(df_3$REMARKS,'RWY\\s[0-9]{1,2}[L|R|C]?')
+df_rwy <- df_3[!is.na(df_3$RWYLOCATION)]
+df_rwy$DATASET <- "RUNWAY"
+df_rwy$UASLOCATION <- str_extract(df_rwy$REMARKS,'([0-9]*[.|-|/]*[0-9]*)\\s?(nm|NM)\\s?(N|S|E|W|NW|NE|SW|SE|SSE|SSW|SNE|SNW|NNE|NSE|NNE|NNW|WSW|WNW|WSE|WNE|ENE|ESE|ESW|ENW) (\\s?(of|OF)?)')
+df_rwy_na <- df_rwy[is.na(df_rwy$UASLOCATION)]
+df_rwy_na$UASLOCATION <- df_rwy_na$REPORTINGFACILITY
+df_rwy_dups <- df_rwy_na[duplicated(df_rwy_na[,c("dateonly","UASLOCATION")]),]
+df_rwy_na <- distinct(df_rwy_na,dateonly,UASLOCATION,.keep_all=TRUE)
+df_rwy <- df_rwy[!is.na(df_rwy$UASLOCATION)]
+df_rwy$UASLOCATION <- paste(df_rwy$UASLOCATION,df_rwy$REPORTINGFACILITY)
+df_rwy_dups <- rbind(df_rwy_dups,df_rwy[duplicated(df_rwy[,c("dateonly","UASLOCATION")]),])
+df_rwy <- distinct(df_rwy,dateonly,UASLOCATION,.keep_all=TRUE)
+  
+#extract all designated points
+df_4 <- df_3[is.na(df_3$RWYLOCATION)]
+df_4$UASLOCATION <- str_extract(df_4$REMARKS,'[0-9]*[.|-|/]*[0-9]*\\s?(nm|NM)\\s?(N|S|E|W|NW|NE|SW|SE|SSE|SSW|SNE|SNW|NNE|NSE|NNE|NNW|WSW|WNW|WSE|WNE|ENE|ESE|ESW|ENW) (\\s?(of|OF)?\\s?) ([A-Z]{5})')
+df_dp <- df_4[!is.na(df_4$UASLOCATION)]
+df_dp$DATASET <- "DESIGNATED POINT"
+df_dp_dups <- df_dp[duplicated(df_dp[,c("dateonly","UASLOCATION")]),]
+df_dp <- distinct(df_dp,dateonly,UASLOCATION,.keep_all=TRUE)
+
+#extract all airports
+df_5 <- df_4[is.na(df_4$UASLOCATION)]
+df_5$UASLOCATION <- str_extract(df_5$REMARKS,'[0-9]*[.|-|/]*[0-9]*\\s?(nm|NM)\\s?(N|S|E|W|NW|NE|SW|SE|SSE|SSW|SNE|SNW|NNE|NSE|NNE|NNW|WSW|WNW|WSE|WNE|ENE|ESE|ESW|ENW) (\\s?(of|OF)?\\s?)([A-Z]{3})')
+df_airport <- df_5[!is.na(df_5$UASLOCATION)]
+df_6 <- df_5[is.na(df_5$UASLOCATION)]
+df_6$UASLOCATION <- str_extract(df_6$REMARKS,'\\b\\d[.|-|/]*\\d*\\s(N|S|E|W|NW|NE|SW|SE|SSE|SSW|SNE|SNW|NNE|NSE|NNE|NNW|WSW|WNW|WSE|WNE|ENE|ESE|ESW|ENW)* (\\s?(of|OF)?\\s?)([A-Z]{3})')
+df_airport2 <- df_6[!is.na(df_6$UASLOCATION)]
+df_airport2$UASLOCATION <- gsub("(\\d[.|-|/]*\\d*\\s)(N|S|E|W|NW|NE|SW|SE|SSE|SSW|SNE|SNW|NNE|NSE|NNE|NNW|WSW|WNW|WSE|WNE|ENE|ESE|ESW|ENW)","\\1NM \\2",df_airport2$UASLOCATION)
+df_airport <- rbind(df_airport,df_airport2)
+df_airport$DATASET <- "AIRPORT"
+df_airport_dups <- df_airport[duplicated(df_airport[,c("dateonly","UASLOCATION")]),]
+df_airport <- distinct(df_airport,dateonly,UASLOCATION,.keep_all=TRUE)
+
+# pull out city names
+df_7 <- df_6[is.na(df_6$UASLOCATION)]
+df_7$UASLOCATION <- str_extract(df_7$REMARKS,'[0-9]*[.|-|/]*[0-9]\\s?(nm|NM)\\s?(N|S|E|W|NW|NE|SW|SE|SSE|SSW|SNE|SNW|NNE|NSE|NNE|NNW|WSW|WNW|WSE|WNE|ENE|ESE|ESW|ENW) (\\s?(of|OF)?\\s?)(\\w+)')
+df_7$cityname <- str_extract(df_7$UASLOCATION,'\\w+$')
+df_7$UASLOCATION <- str_extract(df_7$REMARKS,'[0-9]*[.|-|/]*[0-9]\\s?(nm|NM)\\s?(N|S|E|W|NW|NE|SW|SE|SSE|SSW|SNE|SNW|NNE|NSE|NNE|NNW|WSW|WNW|WSE|WNE|ENE|ESE|ESW|ENW) (\\s?(of|OF)?\\s?)')
+df_7$cityname <- tolower(df_7$cityname)
+navaid$NAME_TXT <- tolower(navaid$NAME_TXT)
+#df_7$citycode <- grepl(df_7$cityname,navaid$NAME_TXT)
+
+#extract all else
+df_7 <- df_6[is.na(df_6$UASLOCATION)]
+df_7$UASLOCATION <- str_extract(df_7$REMARKS,'[0-9]*[.|-|/]*[0-9]*\\s?(nm|NM)\\s?(N|S|E|W|NW|NE|SW|SE|SSE|SSW|SNE|SNW|NNE|NSE|NNE|NNW|WSW|WNW|WSE|WNE|ENE|ESE|ESW|ENW) (\\s?(of|OF)?)')
+df_unk <- df_7[!is.na(df_7$UASLOCATION)]
+df_unk$UASLOCATION <- paste(df_unk$UASLOCATION,df_unk$REPORTINGFACILITY)
+df_8 <- df_7[is.na(df_7$UASLOCATION)]
+df_8$UASLOCATION <- str_extract(df_8$REMARKS,'\\d[.|-|/]*\\d*\\s(N|S|E|W|NW|NE|SW|SE|SSE|SSW|SNE|SNW|NNE|NSE|NNE|NNW|WSW|WNW|WSE|WNE|ENE|ESE|ESW|ENW) (\\s?(of|OF)?\\s?)')
+df_repfac <- df_8[!is.na(df_8$UASLOCATION)]
+df_repfac$UASLOCATION <- gsub("(\\d[.|-|/]*\\d*\\s)(N|S|E|W|NW|NE|SW|SE|SSE|SSW|SNE|SNW|NNE|NSE|NNE|NNW|WSW|WNW|WSE|WNE|ENE|ESE|ESW|ENW)","\\1NM \\2",df_repfac$UASLOCATION)
+df_repfac$UASLOCATION <- paste(df_repfac$UASLOCATION,df_repfac$REPORTINGFACILITY)
+df_unk <- rbind(df_unk,df_repfac)
+df_unk$DATASET <- "AIRPORT(?)"
+df_unk_dups <- df_unk[duplicated(df_unk[,c("dateonly","UASLOCATION")]),]
+df_unk <- distinct(df_unk,dateonly,UASLOCATION,.keep_all=TRUE)
+
+# fixed radial distance
+df_9 <- df_8[is.na(df_8$UASLOCATION)]
+df_9$UASLOCATION <- str_extract(df_9$REMARKS,'[A-Z]{3}\\d{6}')
+df_frd <- df_9[!is.na(df_9$UASLOCATION)]
+df_frd$location <- str_extract(df_frd$UASLOCATION,'^[A-Z]{3}')
+df_frd$heading <- str_extract(df_frd$UASLOCATION,'[0-9]{3}([0-9]{3})$')
+df_frd$heading <- str_extract(df_frd$heading,'^[0-9]{3}')
+df_frd$nm <- str_extract(df_frd$UASLOCATION,'[0-9]{3}$')
+df_frd$UASLOCATION <- paste(df_frd$nm,"NM",df_frd$heading,"of",df_frd$location)
+df_frd$DATASET <- "FIXED RADIAL"
+df_frd <- df_frd[,c("location","heading","nm"):=NULL]
+df_frd_dups <- df_frd[duplicated(df_frd[,c("dateonly","UASLOCATION")]),]
+df_frd <- distinct(df_frd,dateonly,UASLOCATION,.keep_all=TRUE)
+
+
+df_unk_na <- df_10[is.na(df_9$UASLOCATION)]
+df_unk_na$UASLOCATION <- df_unk_na$REPORTINGFACILITY
+df_unk_na$DATASET <- "EXCEPTION"
+df_exp <- rbind(df_unk_na,df_navaid_na,df_rwy_na,fill=TRUE)
+
+df_dupes <- rbind(df_airport_dups,df_dp_dups,df_frd_dups,df_navaid_dups,df_rwy_dups,fill=TRUE)
+df_all <- rbind(df_navaid,df_rwy,df_dp,df_airport,df_unk,df_frd,fill=TRUE)
+# df_all <- arrange(df_all,DATE)
+
+write.csv(df_exp,paste("Output_ExceptionFile_",filename,".csv",sep=""),row.names=FALSE)
+write.csv(df_all,paste("Output_All_Points_",filename,".csv",sep=""),row.names=FALSE)
+write.csv(df_dupes,paste("Output_Duplicates_",filename,".csv",sep=""),row.names=FALSE)
+
+```
