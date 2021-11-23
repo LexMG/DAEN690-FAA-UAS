@@ -2,21 +2,28 @@ This folder contains the Jupyter Notebooks that were used in order to completely
 The following list contains the names and brief descriptions for each respective Notebook. It should be noted that each of the Jupyter Notebooks contains a detailed description
 as well as usage details at the top.
 
-FILE NAME: Incidents_Cleaned_Standard_REMOVE_DUPLICATES.ipynb
-  This Jupyter Notebook is used to remove the duplicate remarks within the Incidents_Cleaned_Standard.csv file that contains 5191 total records for which the text within 
-  the REMARKS field is determined to be of Standard Format. After duplicate removal, there are 5167 records remaining.
+These Jupyter Notebooks can be grouped into ___ broad categories:
+
+A. Notebooks that contains functions that are repeatedly used within this analysis
+    -- StandardRemarks_Functions_airportFAA.ipynb
+    -- StandardRemarks_Functions_airportICAO.ipynb
+    -- StandardRemarks_Fucntions_NAVAID.ipynb
+    -- StandardRemarks_Functions_RWY.ipynb
+    -- Kickback_Functions.ipynb
+
+B. Notebooks that contain analysis for records that were kicked back from the R-Code that Lex created
+    -- Kickback15_Exploratory.ipynb
+    -- Kickback33_Exploratory.ipynb
+    -- Kickback72_Exploratory.ipynb
+    -- Kickback471_Exploratory.ipynb
+    -- Kickback501_Exploratory.ipynb
+
+C. Notebooks that contain original analysis on Standard Format Records
+    -- Incidents_Cleaned_Standard_REMOVE_DUPLICATES.ipynb
+    -- Linking_Datasets--Airports&Runways.ipynb
+    -- NAVAID_Exploratory.ipynb
+    -- Standard5167_Exploratory.ipynb
+    -- Standard3025_FAAair_Exploratory.ipynb
+    -- Standard3025_noAirport215_Exploratory.ipynb
+    -- Runways599_Exploratory.ipynb
   
-FILE NAME: Kickback15_Exploratory.ipynb
-  This Jupyter Notebook explores 15 records (of the 1543 OTHER records) that were returned after being ran through Lex's R Code.
-
-FILE NAME: Kickback33_Exploratory.ipynb
-  This Jupyter Notebook explores 33 records (of the 1543 OTHER records) that were returned after being ran through Lex's R Code.
-
-FILE NAME: Kickback72_Exploratory.ipynb
-  This Jupyter Notebook explores 72 records (of the 1543 OTHER records) that were returned after being ran through Lex's R Code.
-
-FILE NAME: Kickback471_Exploratory.ipynb
-  This Jupyter Notebook explores 471 records (of the 1543 OTHER records) that were returned after being ran through Lex's R Code.
-
-FILE NAME: Kickback501_Exploratory.ipynb
-  This Jupyter Notebook explores 501 records (of the 1543 OTHER records) that were returned after being ran through Lex's R Code.
