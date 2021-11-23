@@ -5,4 +5,16 @@ FILE NAME: Incidents_Cleaned_Standard_REMOVE_DUPLICATES.ipynb
   This Jupyter Notebook is used to remove the duplicate remarks within the Incidents_Cleaned_Standard.csv file that contains 5191 total records for which the text within 
   the REMARKS field is determined to be of Standard Format. After duplicate removal, there are 5167 records remaining.
   
-FILE NAME: 
+FILE NAME: Kickback15_Exploratory.ipynb
+  This Jupyter Notebook explores 15 records (of the 1543 OTHER records) that were returned after being ran through Lex's R Code.
+
+FILE NAME: Kickback33_Exploratory.ipynb
+  
+
+FILE NAME: Kickback72_Exploratory.ipynb
+
+
+FILE NAME: Kickback471_Exploratory.ipynb
+
+
+FILE NAME: Kickback501_Exploratory.ipynb
