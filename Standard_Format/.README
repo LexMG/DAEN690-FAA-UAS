@@ -1,2 +1,8 @@
 This folder contains the Jupyter Notebooks that were used in order to completely parse through the 5191 records that were deemed to be of Standard Format. 
 The following list contains the names and useage details for each respective Notebook.
+
+FILE NAME: Incidents_Cleaned_Standard_REMOVE_DUPLICATES.ipynb
+  This Jupyter Notebook is used to remove the duplicate remarks within the Incidents_Cleaned_Standard.csv file that contains 5191 total records for which the text within 
+  the REMARKS field is determined to be of Standard Format. After duplicate removal, there are 5167 records remaining.
+  
+FILE NAME: 
