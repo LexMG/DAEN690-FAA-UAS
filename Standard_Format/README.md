@@ -1,12 +1,12 @@
 **Standard Format Remarks Jupyter Notebooks**
 <br>
 <br>
-This folder contains the Jupyter Notebooks that were used in order to completely parse through the 5191 records that were deemed to be of Standard Format. 
+This folder contains the 18 Jupyter Notebooks that were used in order to completely parse through the 5191 records that were deemed to be of Standard Format. 
 The following list contains the names of each respective Notebook and it should be noted that each of the Jupyter Notebooks contains a detailed description
 as well as usage details at the top.
 <br>
 ***
-These Jupyter Notebooks can be grouped into 17 broad categories:
+These Jupyter Notebooks can be grouped into three broad categories:
 <br>
 <br>
 
