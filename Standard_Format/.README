@@ -1,5 +1,6 @@
 This folder contains the Jupyter Notebooks that were used in order to completely parse through the 5191 records that were deemed to be of Standard Format. 
-The following list contains the names and useage details for each respective Notebook.
+The following list contains the names and brief descriptions for each respective Notebook. It should be noted that each of the Jupyter Notebooks contains a detailed description
+as well as usage details at the top.
 
 FILE NAME: Incidents_Cleaned_Standard_REMOVE_DUPLICATES.ipynb
   This Jupyter Notebook is used to remove the duplicate remarks within the Incidents_Cleaned_Standard.csv file that contains 5191 total records for which the text within 
@@ -9,12 +10,13 @@ FILE NAME: Kickback15_Exploratory.ipynb
   This Jupyter Notebook explores 15 records (of the 1543 OTHER records) that were returned after being ran through Lex's R Code.
 
 FILE NAME: Kickback33_Exploratory.ipynb
-  
+  This Jupyter Notebook explores 33 records (of the 1543 OTHER records) that were returned after being ran through Lex's R Code.
 
 FILE NAME: Kickback72_Exploratory.ipynb
-
+  This Jupyter Notebook explores 72 records (of the 1543 OTHER records) that were returned after being ran through Lex's R Code.
 
 FILE NAME: Kickback471_Exploratory.ipynb
-
+  This Jupyter Notebook explores 471 records (of the 1543 OTHER records) that were returned after being ran through Lex's R Code.
 
 FILE NAME: Kickback501_Exploratory.ipynb
+  This Jupyter Notebook explores 501 records (of the 1543 OTHER records) that were returned after being ran through Lex's R Code.
