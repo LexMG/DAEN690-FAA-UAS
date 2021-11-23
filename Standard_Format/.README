@@ -2,7 +2,7 @@ This folder contains the Jupyter Notebooks that were used in order to completely
 The following list contains the names and brief descriptions for each respective Notebook. It should be noted that each of the Jupyter Notebooks contains a detailed description
 as well as usage details at the top.
 
-These Jupyter Notebooks can be grouped into ___ broad categories:
+These Jupyter Notebooks can be grouped into 17 broad categories:
 
 A. Notebooks that contains functions that are repeatedly used within this analysis
     -- StandardRemarks_Functions_airportFAA.ipynb
