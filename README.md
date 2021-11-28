@@ -6,3 +6,5 @@ Unmanned Aircraft Systems (UAS) use has become prevalent across the United State
 
 1) Incidents-Exploratory.rmd -- An R Markdown file that gives an initial scrub of the data, which includes splitting up the large CEDAR Remarks field into multiple fields, removing codes that were not relevant to this project, and subsetting the data into Standard and Non-standard Format datasets.
 2) Non-Standard_Algorithm.rmd (Needs to be renamed) -- An R Markdown file where records that were not immediately parsed properly to latitude/longitude could be analyzed further to determine if they had data in an alternative proper format, or should be left into an exceptions file.
+3) Standard_Format Folder -- This folder contains the Jupyter Notebooks that were used to parse through those records for which the Remarks was deemed to be of the Standard Format. This folder contains its own README.md file that further explains these Notebooks and their contents. It should be noted that each Jupyter Notebook in this folder is adequately commented and contains information regarding the script at the beginning of each file. 
+4) 4) Non_
