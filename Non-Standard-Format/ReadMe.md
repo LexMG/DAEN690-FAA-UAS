@@ -3,7 +3,7 @@
 This folder contains 18 Jupyter Notebooks that were used to parse through the 3443 non-standard records. Each of these notebooks has a detailed description of what it is doing and what output the notebook gives. The list below shows the notebooks included in this folder.
 ***
 
-1. All Notebooks that contain the original analysis for Non-Standard format records.
+**1. All Notebooks that contain the original analysis for Non-Standard format records.**
 -	9Records_Exploratory.ipynb
 -	21Duplicates&NA-Exploratory.ipynb
 -	Airports & Runways linking datasets.ipynb
@@ -12,7 +12,7 @@ This folder contains 18 Jupyter Notebooks that were used to parse through the 34
 -	Non-Standard3421_Exploratory.ipynb
 -	Non-standard2536_Exploratory.ipynb
 
-2.	All Notebooks that contain analysis for records that were kicked back from the R-Code that Lex created.
+**2.	All Notebooks that contain analysis for records that were kicked back from the R-Code that Lex created.**
 -	KickBack60_Exploratory.ipynb
 -	Kickback1 + 25_Exploratory.ipynb
 -	Kickback103+3_Exploratory.ipynb
