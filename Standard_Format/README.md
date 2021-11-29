@@ -9,14 +9,14 @@ These Jupyter Notebooks can be grouped into three broad categories:
 <br>
 <br>
 
-**A. Notebooks that contains functions that are repeatedly used within this analysis** <br>
+**A. Notebooks containing functions that are repeatedly used within this analysis** <br>
     -- StandardRemarks_Functions_airportFAA.ipynb <br>
     -- StandardRemarks_Functions_airportICAO.ipynb <br>
     -- StandardRemarks_Fucntions_NAVAID.ipynb <br>
     -- StandardRemarks_Functions_RWY.ipynb <br>
     -- Kickback_Functions.ipynb <br>
 <br>
-**B. Notebooks that contain analysis for records that were kicked back from the R-Code that Lex created** <br>
+**B. Notebooks containing analysis for records that were kicked back from the R-Code that Lex created** <br>
     -- Kickback15_Exploratory.ipynb <br>
     -- Kickback33_Exploratory.ipynb <br>
     -- Kickback72_Exploratory.ipynb <br>
@@ -24,7 +24,7 @@ These Jupyter Notebooks can be grouped into three broad categories:
     -- Kickback501_Exploratory.ipynb <br>
     -- Runways22_Exploratory.ipynb <br>
 <br>
-**C. Notebooks that contain original analysis on Standard Format Records** <br>
+**C. Notebooks containing original analysis on Standard Format Records** <br>
     -- Incidents_Cleaned_Standard_REMOVE_DUPLICATES.ipynb <br>
     -- Linking_Datasets--Airports&Runways.ipynb <br>
     -- NAVAID_Exploratory.ipynb <br>
